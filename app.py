@@ -117,4 +117,153 @@ TRANS = {
         "btn_back_dash": "⬅️ 返回控制台",
         "legal_page_title": "法律护盾与合规中心",
         "policy_refund_t": "🚫 无退款政策 (区块链不可篡改)",
-        "policy_refund_d": "一旦证书在 Solana 区块链上铸造完成，该交易即生成永久且不可逆的记录。Gas 费已实时支付给网络节点。因此，OriginGuard 无法对已激活的保护
+        "policy_refund_d": "一旦证书在 Solana 区块链上铸造完成，该交易即生成永久且不可逆的记录。Gas 费已实时支付给网络节点。因此，OriginGuard 无法对已激活的保护服务提供退款或取消。所有销售均为最终决定。",
+        "policy_sla_t": "⚡ 服务等级协议 (SLA)",
+        "policy_sla_d": "对于企业级订阅用户，我们承诺 99.9% 的 API 正常运行时间。如果宕机时间超过 1 小时，我们将赔偿服务积分。",
+        "policy_privacy_t": "🔒 隐私与数据主权",
+        "policy_privacy_d": "我们绝不出售、交易或出租您的个人身份信息。您的源文件在哈希计算前均会在本地加密。数据归您所有。",
+        "footer": "© 2026 OriginGuard Solutions. 版权所有。"
+    },
+    "Myanmar": {
+        "slogan": "ဖန်တီးမှုများကို ကာကွယ်ပါ",
+        "sub_slogan": "Web3 မူပိုင်ခွင့် ကာကွယ်ရေး | AI နည်းပညာ | Blockchain သက်သေ",
+        "btn_launch": "🚀 စနစ်စတင်မည်",
+        "core_tech": "အဓိက နည်းပညာများ",
+        "tech_1_t": "မမြင်ရသော ရေစာ",
+        "tech_1_d": "AI နည်းပညာဖြင့် ပုံရိပ်ထဲတွင် မြှုပ်နှံထားသည်။",
+        "tech_2_t": "Blockchain သက်သေ",
+        "tech_2_d": "Solana ပေါ်တွင် ဖျက်၍မရသော မှတ်တမ်း။",
+        "tech_3_t": "AI ဥပဒေ လက်နက်",
+        "tech_3_d": "DMCA တိုင်ကြားစာ အလိုအလျောက် ပေးပို့ခြင်း။",
+        "dash_title": "လုံခြုံရေး ဒက်ရှ်ဘုတ်",
+        "sidebar_title": "ထိန်းချုပ်ခန်း",
+        "role": "CEO / အက်ဒမင်",
+        "status": "🟢 စနစ် အလုပ်လုပ်နေသည်",
+        "btn_logout": "⬅️ ထွက်မည်",
+        "btn_legal": "⚖️ ဥပဒေဌာန",
+        "btn_back_dash": "⬅️ ဒက်ရှ်ဘုတ် သို့ပြန်သွားရန်",
+        "legal_page_title": "ဥပဒေနှင့် စည်းမျဉ်းများ",
+        "policy_refund_t": "🚫 ငွေပြန်အမ်းမည်မဟုတ်ပါ (No Refund)",
+        "policy_refund_d": "Solana Blockchain တွင် မှတ်တမ်းတင်ပြီးပါက ပြန်လည်ပြင်ဆင်၍မရပါ။ ထို့ကြောင့် ငွေပြန်အမ်းခြင်း မပြုလုပ်နိုင်ပါ။",
+        "policy_sla_t": "⚡ ဝန်ဆောင်မှု အာမခံချက် (SLA)",
+        "policy_sla_d": "စနစ်ပိုင်းဆိုင်ရာ ၉၉.၉% အချိန်ပြည့် အလုပ်လုပ်မည်ဟု အာမခံပါသည်။",
+        "policy_privacy_t": "🔒 ကိုယ်ပိုင်အချက်အလက် လုံခြုံရေး",
+        "policy_privacy_d": "သင်၏ အချက်အလက်များကို ရောင်းချခြင်း မပြုပါ။",
+        "footer": "© 2026 OriginGuard Solutions. မူပိုင်ခွင့် ရယူထားသည်။"
+    }
+}
+
+# ==========================================
+# 3. 语言选择逻辑
+# ==========================================
+lang_choice = st.sidebar.selectbox(
+    "🌐 Language / ဘာသာစကား / 语言",
+    ["English", "中文", "Myanmar"],
+    index=1
+)
+T = TRANS[lang_choice]
+
+# ==========================================
+# 4. 页面路由与渲染
+# ==========================================
+if 'page' not in st.session_state:
+    st.session_state.page = 'landing'
+
+def set_page(page_name):
+    st.session_state.page = page_name
+
+# --- 1. 落地页 (Landing Page) ---
+if st.session_state.page == 'landing':
+    st.write("")
+    st.write("")
+    st.markdown(f"""
+    <div style="text-align: center; padding: 40px 0;">
+        <h1 style="font-size: 56px; margin-bottom: 20px;">{T['slogan']}</h1>
+        <p style="font-size: 20px; color: #94a3b8; max-width: 800px; margin: 0 auto;">{T['sub_slogan']}</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.write("")
+    c1, c2, c3 = st.columns([1, 1, 1])
+    with c2:
+        if st.button(T['btn_launch'], use_container_width=True):
+            set_page('dashboard')
+            st.rerun()
+
+    st.markdown("---")
+    st.subheader(T['core_tech'])
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.info(T['tech_1_t'])
+        st.caption(T['tech_1_d'])
+    with c2:
+        st.info(T['tech_2_t'])
+        st.caption(T['tech_2_d'])
+    with c3:
+        st.info(T['tech_3_t'])
+        st.caption(T['tech_3_d'])
+    st.markdown("---")
+    st.caption(T['footer'])
+
+# --- 2. 仪表盘 (Dashboard) ---
+elif st.session_state.page == 'dashboard':
+    with st.sidebar:
+        st.title(T['sidebar_title'])
+        st.write(f"👤 **MNNO** ({T['role']})")
+        st.success(T['status'])
+        st.markdown("---")
+        # 新增法务中心入口
+        if st.button(T['btn_legal']):
+            set_page('legal')
+            st.rerun()
+        st.markdown("---")
+        if st.button(T['btn_logout']):
+            set_page('landing')
+            st.rerun()
+
+    st.title(T['dash_title'])
+    k1, k2, k3, k4 = st.columns(4)
+    k1.metric("Protected", "1,248")
+    k2.metric("Blocked", "53", "High", delta_color="inverse")
+    k3.metric("Actions", "41")
+    k4.metric("Saved", "$12,400")
+
+    st.markdown("---")
+    tab1, tab2, tab3 = st.tabs(["🛡️ Protect", "🌍 Map", "⚖️ Legal"])
+    with tab1:
+        st.file_uploader("JPG / PNG", type=['png', 'jpg'])
+        st.button("🔒 Encrypt & Mint")
+    with tab2:
+        st.map(pd.DataFrame({'lat': [13.7563], 'lon': [100.5018]}))
+    with tab3:
+        st.text_input("URL")
+        st.button("🚀 DMCA")
+
+# --- 3. 法务中心 (Legal Center) [新增核心模块] ---
+elif st.session_state.page == 'legal':
+    with st.sidebar:
+        st.title(T['sidebar_title'])
+        st.write(f"👤 **MNNO** ({T['role']})")
+        st.markdown("---")
+        # 返回按钮
+        if st.button(T['btn_back_dash']):
+            set_page('dashboard')
+            st.rerun()
+        if st.button(T['btn_logout']):
+            set_page('landing')
+            st.rerun()
+
+    st.title(T['legal_page_title'])
+    st.markdown("---")
+
+    # 条款 1: 无退款 (红色警示)
+    st.error(f"### {T['policy_refund_t']}\n\n{T['policy_refund_d']}")
+    
+    # 条款 2: SLA (蓝色信息)
+    st.info(f"### {T['policy_sla_t']}\n\n{T['policy_sla_d']}")
+    
+    # 条款 3: 隐私 (绿色成功/安全)
+    st.success(f"### {T['policy_privacy_t']}\n\n{T['policy_privacy_d']}")
+    
+    st.markdown("---")
+    st.caption("Legal documents generated by OriginGuard AI Legal Engine v3.1")

@@ -12,6 +12,7 @@ st.set_page_config(
 )
 
 # 注入 CSS：Web3 深色主题 + 缅甸字体支持 + 高对比度文字
+# 特别增加了针对 Warning/Error 提示框的样式优化，使其符合 Cyberpunk 风格
 st.markdown("""
 <style>
     /* 引入 Google Noto Sans Myanmar 字体，解决乱码 */
@@ -20,8 +21,8 @@ st.markdown("""
     /* 全局背景：深空灰蓝 Web3 渐变 */
     .stApp {
         background: linear-gradient(180deg, #020617 0%, #0f172a 100%);
-        font-family: 'Inter', 'Noto Sans Myanmar', sans-serif; /* 优先使用缅文适配字体 */
-        color: #e2e8f0; /* 亮灰白文字，确保看得清 */
+        font-family: 'Inter', 'Noto Sans Myanmar', sans-serif;
+        color: #e2e8f0;
     }
 
     /* 标题高亮：青色渐变 */
@@ -54,12 +55,12 @@ st.markdown("""
         color: #fff;
     }
 
-    /* 数据卡片背景 */
-    div[data-testid="stMetricValue"] {
-        color: #38bdf8 !important; /* 青蓝色数字 */
-    }
-    div[data-testid="stMetricLabel"] {
-        color: #94a3b8 !important; /* 浅灰标签 */
+    /* 法律条款警示框样式重写 */
+    div[data-testid="stNotification"] {
+        background-color: #1e293b;
+        border: 1px solid #334155;
+        color: #f8fafc;
+        border-radius: 8px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -67,7 +68,7 @@ st.markdown("""
 # ==========================================
 # 2. 语言字典库 (The Translation Matrix)
 # ==========================================
-# 这里定义了所有界面文字，确保 100% 语言隔离
+# 包含了新增的法律条款翻译
 TRANS = {
     "English": {
         "slogan": "Protect What You Create.",
@@ -85,19 +86,15 @@ TRANS = {
         "role": "CEO / Admin",
         "status": "🟢 System Online",
         "btn_logout": "⬅️ Log Out",
-        "kpi_1": "Protected Assets",
-        "kpi_2": "Threats Blocked",
-        "kpi_3": "Legal Actions",
-        "kpi_4": "Cost Saved",
-        "tab_1": "🛡️ Protect",
-        "tab_2": "🌍 Map",
-        "tab_3": "⚖️ Legal",
-        "upload_title": "Asset Encryption",
-        "upload_btn": "🔒 Encrypt & Mint",
-        "map_title": "Global Threat Map",
-        "legal_title": "Enforcement Actions",
-        "legal_input": "Infringing URL",
-        "legal_btn": "🚀 Send Notice",
+        "btn_legal": "⚖️ Legal Center", 
+        "btn_back_dash": "⬅️ Back to Dashboard",
+        "legal_page_title": "Legal Shield & Compliance",
+        "policy_refund_t": "🚫 No-Refund Policy (Blockchain Immutable)",
+        "policy_refund_d": "Once a certificate is minted on the Solana Blockchain, the transaction creates a permanent, irreversible record. Gas fees are paid instantly to the network. Therefore, OriginGuard cannot offer refunds or cancellations once protection is activated. All sales are final.",
+        "policy_sla_t": "⚡ Service Level Agreement (SLA)",
+        "policy_sla_d": "For Enterprise subscribers, we guarantee 99.9% API uptime. In the event of downtime exceeding 1 hour, users will be compensated with service credits.",
+        "policy_privacy_t": "🔒 Privacy & Data Sovereignty",
+        "policy_privacy_d": "We do not sell, trade, or rent your personal identification information. Master files are encrypted locally before hashing. You own your data.",
         "footer": "© 2026 OriginGuard Solutions. All rights reserved."
     },
     "中文": {
@@ -116,162 +113,8 @@ TRANS = {
         "role": "CEO / 管理员",
         "status": "🟢 系统运行中",
         "btn_logout": "⬅️ 退出登录",
-        "kpi_1": "已保护资产",
-        "kpi_2": "拦截威胁",
-        "kpi_3": "维权行动",
-        "kpi_4": "节省成本",
-        "tab_1": "🛡️ 确权保护",
-        "tab_2": "🌍 全球监控",
-        "tab_3": "⚖️ 法律打击",
-        "upload_title": "资产加密上传",
-        "upload_btn": "🔒 加密并铸造证书",
-        "map_title": "全球威胁态势图",
-        "legal_title": "维权执行中心",
-        "legal_input": "输入侵权链接 (URL)",
-        "legal_btn": "🚀 发送律师函",
-        "footer": "© 2026 OriginGuard Solutions. 版权所有。"
-    },
-    "Myanmar": {
-        "slogan": "ဖန်တီးမှုများကို ကာကွယ်ပါ",
-        "sub_slogan": "Web3 မူပိုင်ခွင့် ကာကွယ်ရေး | AI နည်းပညာ | Blockchain သက်သေ",
-        "btn_launch": "🚀 စနစ်စတင်မည်",
-        "core_tech": "အဓိက နည်းပညာများ",
-        "tech_1_t": "မမြင်ရသော ရေစာ",
-        "tech_1_d": "AI နည်းပညာဖြင့် ပုံရိပ်ထဲတွင် မြှုပ်နှံထားသည်။",
-        "tech_2_t": "Blockchain သက်သေ",
-        "tech_2_d": "Solana ပေါ်တွင် ဖျက်၍မရသော မှတ်တမ်း။",
-        "tech_3_t": "AI ဥပဒေ လက်နက်",
-        "tech_3_d": "DMCA တိုင်ကြားစာ အလိုအလျောက် ပေးပို့ခြင်း။",
-        "dash_title": "လုံခြုံရေး ဒက်ရှ်ဘုတ်",
-        "sidebar_title": "ထိန်းချုပ်ခန်း",
-        "role": "CEO / အက်ဒမင်",
-        "status": "🟢 စနစ် အလုပ်လုပ်နေသည်",
-        "btn_logout": "⬅️ ထွက်မည်",
-        "kpi_1": "ကာကွယ်ထားသော ပိုင်ဆိုင်မှု",
-        "kpi_2": "တားဆီးထားသော ခြိမ်းခြောက်မှု",
-        "kpi_3": "ဥပဒေအရ အရေးယူမှု",
-        "kpi_4": "သက်သာသော ကုန်ကျစရိတ်",
-        "tab_1": "🛡️ ကာကွယ်ရန်",
-        "tab_2": "🌍 မြေပုံ",
-        "tab_3": "⚖️ ဥပဒေ",
-        "upload_title": "ဖိုင်တင်ရန်",
-        "upload_btn": "🔒 မှတ်ပုံတင်မည်",
-        "map_title": "ကမ္ဘာလုံးဆိုင်ရာ ခြိမ်းခြောက်မှု မြေပုံ",
-        "legal_title": "ဥပဒေ အရေးယူ ဆောင်ရွက်ချက်များ",
-        "legal_input": "လင့်ခ် ထည့်ပါ (URL)",
-        "legal_btn": "🚀 တိုင်ကြားစာ ပို့မည်",
-        "footer": "© 2026 OriginGuard Solutions. မူပိုင်ခွင့် ရယူထားသည်။"
-    }
-}
-
-# ==========================================
-# 3. 语言选择逻辑 (Language Switcher)
-# ==========================================
-# 在侧边栏放置语言选择器，默认中文
-lang_choice = st.sidebar.selectbox(
-    "🌐 Language / ဘာသာစကား / 语言",
-    ["English", "中文", "Myanmar"],
-    index=1 # 默认选中中文
-)
-
-# 获取当前语言的字典
-T = TRANS[lang_choice]
-
-# ==========================================
-# 4. 页面路由与渲染 (Page Rendering)
-# ==========================================
-if 'page' not in st.session_state:
-    st.session_state.page = 'landing'
-
-def enter_dashboard():
-    st.session_state.page = 'dashboard'
-
-def go_home():
-    st.session_state.page = 'landing'
-
-# --- 落地页 (Landing Page) ---
-if st.session_state.page == 'landing':
-    
-    st.write("")
-    st.write("")
-    
-    # 标题区
-    st.markdown(f"""
-    <div style="text-align: center; padding: 40px 0;">
-        <h1 style="font-size: 56px; margin-bottom: 20px;">
-            {T['slogan']}
-        </h1>
-        <p style="font-size: 20px; color: #94a3b8; max-width: 800px; margin: 0 auto;">
-            {T['sub_slogan']}
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    st.write("")
-
-    # 启动按钮
-    c1, c2, c3 = st.columns([1, 1, 1])
-    with c2:
-        if st.button(T['btn_launch'], use_container_width=True):
-            enter_dashboard()
-            st.rerun()
-
-    st.markdown("---")
-
-    # 核心技术区
-    st.subheader(T['core_tech'])
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        st.info(T['tech_1_t'])
-        st.caption(T['tech_1_d'])
-    with c2:
-        st.info(T['tech_2_t'])
-        st.caption(T['tech_2_d'])
-    with c3:
-        st.info(T['tech_3_t'])
-        st.caption(T['tech_3_d'])
-        
-    st.markdown("---")
-    st.caption(T['footer'])
-
-# --- 仪表盘 (Dashboard) ---
-elif st.session_state.page == 'dashboard':
-    
-    # 侧边栏信息
-    with st.sidebar:
-        st.title(T['sidebar_title'])
-        st.write(f"👤 **MNNO** ({T['role']})")
-        st.success(T['status'])
-        st.markdown("---")
-        if st.button(T['btn_logout']):
-            go_home()
-            st.rerun()
-
-    # 主标题
-    st.title(T['dash_title'])
-    
-    # KPI 卡片
-    k1, k2, k3, k4 = st.columns(4)
-    k1.metric(T['kpi_1'], "1,248")
-    k2.metric(T['kpi_2'], "53", "High", delta_color="inverse")
-    k3.metric(T['kpi_3'], "41")
-    k4.metric(T['kpi_4'], "$12,400")
-
-    st.markdown("---")
-
-    # 功能 Tabs
-    tab1, tab2, tab3 = st.tabs([T['tab_1'], T['tab_2'], T['tab_3']])
-
-    with tab1:
-        st.subheader(T['upload_title'])
-        st.file_uploader("JPG / PNG", type=['png', 'jpg'])
-        st.button(T['upload_btn'])
-    
-    with tab2:
-        st.subheader(T['map_title'])
-        st.map(pd.DataFrame({'lat': [13.7563, 16.8409], 'lon': [100.5018, 96.1735]}))
-
-    with tab3:
-        st.subheader(T['legal_title'])
-        st.text_input(T['legal_input'])
-        st.button(T['legal_btn'])
+        "btn_legal": "⚖️ 法务中心",
+        "btn_back_dash": "⬅️ 返回控制台",
+        "legal_page_title": "法律护盾与合规中心",
+        "policy_refund_t": "🚫 无退款政策 (区块链不可篡改)",
+        "policy_refund_d": "一旦证书在 Solana 区块链上铸造完成，该交易即生成永久且不可逆的记录。Gas 费已实时支付给网络节点。因此，OriginGuard 无法对已激活的保护

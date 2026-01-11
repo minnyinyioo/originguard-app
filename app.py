@@ -2,126 +2,142 @@ import streamlit as st
 import pandas as pd
 import time
 
-# --- 1. 企业级页面配置 (Enterprise Config) ---
+# --- 全局页面设置 ---
 st.set_page_config(
-    page_title="OriginGuard Enterprise Console",
-    page_icon="⚖️",
-    layout="wide", # 开启宽屏模式，霸气
-    initial_sidebar_state="expanded"
+    page_title="OriginGuard - Digital Asset Security",
+    page_icon="🛡️",
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
-# --- 2. 侧边栏导航 (Professional Sidebar) ---
-with st.sidebar:
-    st.title("🛡️ OriginGuard")
-    st.caption("Global Copyright Protection")
-    st.markdown("---")
+# --- 会话状态管理 (用来控制是看官网还是看后台) ---
+if 'page' not in st.session_state:
+    st.session_state.page = 'landing'
+
+def enter_dashboard():
+    st.session_state.page = 'dashboard'
+
+def go_home():
+    st.session_state.page = 'landing'
+
+# ==================================================
+# 1. 官网落地页 (Landing Page) - 回答"我们是谁"
+# ==================================================
+if st.session_state.page == 'landing':
     
-    # 模拟用户头像
-    col1, col2 = st.columns([1, 4])
+    # --- 顶部导航 ---
+    col1, col2 = st.columns([1, 5])
     with col1:
-        st.write("👤")
+        st.write("## 🛡️ OriginGuard")
     with col2:
-        st.write("**MNNO (CEO)**")
-        st.caption("Admin Access: Level 1")
-    
-    st.markdown("---")
-    
-    menu = st.radio(
-        "WORKSTATION",
-        ["Dashboard (仪表盘)", "Asset Protection (资产确权)", "Enforcement (维权行动)", "Legal Docs (法务中心)", "Settings (设置)"]
-    )
-    
-    st.markdown("---")
-    st.info("System Status: 🟢 Operational")
-    st.caption("v2.0.1 Enterprise Build")
-
-# --- 3. 主界面逻辑 ---
-
-if menu == "Dashboard (仪表盘)":
-    # 顶部欢迎语
-    st.markdown("## 📊 Executive Overview")
-    st.markdown("Welcome back, CEO. Here is the daily security briefing.")
-    
-    # 关键指标 (KPIs) - 这是一个专业公司该看的数据
-    col1, col2, col3, col4 = st.columns(4)
-    
-    with col1:
-        st.metric(label="Protected Assets (已保护资产)", value="1,248", delta="+12 Today")
-    with col2:
-        st.metric(label="Infringements Detected (监测盗图)", value="53", delta="High Alert", delta_color="inverse")
-    with col3:
-        st.metric(label="Takedown Success (维权成功率)", value="94.8%", delta="+2.1%")
-    with col4:
-        st.metric(label="Pending Lawsuits (进行中案件)", value="3")
+        st.write("") # Spacer
 
     st.markdown("---")
 
-    # 图表区域
-    c1, c2 = st.columns([2, 1])
+    # --- Hero Section (主视觉区) ---
+    # 这里回答：我们是干什么的？
+    st.markdown("""
+    <div style="text-align: center; padding: 50px 0;">
+        <h1 style="font-size: 60px; font-weight: 800; background: -webkit-linear-gradient(45deg, #007CF0, #00DFD8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            Protect What You Create.
+        </h1>
+        <p style="font-size: 24px; color: #666; max-width: 800px; margin: 0 auto;">
+            The world's first <b>AI-Powered</b> copyright protection platform backed by <b>Blockchain Immutability</b>.
+            <br>Stop theft before it happens.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
     
-    with c1:
-        st.subheader("🌍 Global Threat Map (全球威胁监控)")
-        # 模拟一个地图数据
-        map_data = pd.DataFrame({
-            'lat': [16.8409, 13.7563, 1.3521, 37.7749],
-            'lon': [96.1735, 100.5018, 103.8198, -122.4194]
-        })
-        st.map(map_data, zoom=3)
-        st.caption("Real-time monitoring nodes: Yangon, Bangkok, Singapore, San Francisco.")
-
+    # --- 巨大的启动按钮 ---
+    c1, c2, c3 = st.columns([1, 1, 1])
     with c2:
-        st.subheader("Recent Activity")
-        st.success("✅ Certificate #OG-8829 minted on Solana.")
-        st.warning("⚠️ Facebook violation detected (User: ID_992).")
-        st.info("ℹ️ Legal Letter sent to TikTok Legal Dept.")
-        st.success("✅ Payment received ($199.00 Enterprise Plan).")
+        if st.button("🚀 LAUNCH ENTERPRISE CONSOLE\n(进入企业控制台)", use_container_width=True, type="primary"):
+            enter_dashboard()
+            st.rerun()
 
-elif menu == "Asset Protection (资产确权)":
-    st.markdown("## 🛡️ Intellectual Property Vault")
-    st.write("Upload high-fidelity assets for Invisible Watermarking & Blockchain Hashing.")
+    st.markdown("---")
+
+    # --- Feature Section (核心技术) ---
+    # 这里回答：通过什么技术运行？
+    st.subheader("💡 Core Technology (核心技术)")
     
-    # 专业上传区
-    uploaded_file = st.file_uploader("Drop Master Files Here (RAW/JPG/PNG)", type=['png', 'jpg'])
+    f1, f2, f3 = st.columns(3)
     
-    if uploaded_file:
-        with st.spinner("Encrypting & Hashing..."):
-            time.sleep(2)
-        st.success("✅ Asset Secured. Blockchain Certificate Generated.")
+    with f1:
+        st.markdown("### 👁️ Invisible Watermark")
+        st.info("隐形水印技术")
+        st.write("Our AI embeds a hidden 'DNA' into your images. It survives compression, cropping, and screenshots. Even if they steal it, we can prove it's yours.")
+    
+    with f2:
+        st.markdown("### ⛓️ Blockchain Evidence")
+        st.info("区块链存证")
+        st.write("Every asset is hashed and minted on the **Solana Blockchain**. This creates an immutable, court-admissible certificate of ownership.")
+    
+    with f3:
+        st.markdown("### ⚖️ AI Legal Hammer")
+        st.info("AI 自动维权")
+        st.write("Detected a theft? Our AI generates and sends DMCA Takedown Notices to Facebook/TikTok legal departments instantly.")
+
+    st.markdown("---")
+
+    # --- Why Us Section (信任背书) ---
+    # 这里回答：为什么选我们？
+    st.subheader("🏆 Why OriginGuard?")
+    
+    w1, w2, w3, w4 = st.columns(4)
+    with w1:
+        st.metric(label="Protection Speed", value="0.5s", delta="Real-time")
+    with w2:
+        st.metric(label="Cost Savings", value="90%", delta="vs Lawyers")
+    with w3:
+        st.metric(label="Success Rate", value="99.9%", delta="Blockchain Verified")
+    with w4:
+        st.metric(label="Global Coverage", value="180+", delta="Countries")
+
+    # --- 底部 ---
+    st.markdown("<br><br><div style='text-align:center; color:gray; font-size:12px;'>© 2026 OriginGuard Solutions. Built for the Creator Economy.</div>", unsafe_allow_html=True)
+
+
+# ==================================================
+# 2. 企业仪表盘 (Dashboard) - 真正的功能区
+# ==================================================
+elif st.session_state.page == 'dashboard':
+    
+    # 侧边栏
+    with st.sidebar:
+        st.title("🛡️ Console")
+        st.write("**User:** MNNO (CEO)")
+        st.markdown("---")
+        if st.button("⬅️ Log Out"):
+            go_home()
+            st.rerun()
+    
+    # 仪表盘主内容 (这就是刚才那个专业的界面)
+    st.markdown("## 📊 Enterprise Dashboard")
+    st.markdown("**Status:** 🟢 System Operational | **Network:** Solana Mainnet")
+    
+    # 关键数据卡片
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Protected Assets", "1,248")
+    col2.metric("Violations Found", "53", "High Alert", delta_color="inverse")
+    col3.metric("Legal Actions Sent", "41")
+    col4.metric("Money Saved", "$12,400")
+
+    st.markdown("---")
+
+    # 功能区
+    tab1, tab2, tab3 = st.tabs(["🛡️ Protect (保护)", "🔍 Monitor (监控)", "⚖️ Enforce (维权)"])
+    
+    with tab1:
+        st.write("### Upload Assets for Encryption")
+        st.file_uploader("Upload Image", type=['png', 'jpg'])
+        st.button("Encrypt & Mint Certificate")
         
-        # 模拟证书预览
-        st.info("🔗 Blockchain Hash: 0x71C...92A | Time: 2026-01-11 15:30:00 UTC")
-
-elif menu == "Enforcement (维权行动)":
-    st.markdown("## ⚖️ Legal Enforcement Unit")
-    st.write("Automated DMCA Takedown & Cease and Desist Issuance.")
-    
-    url = st.text_input("Infringing URL (Facebook/TikTok Post Link)", placeholder="https://facebook.com/...")
-    
-    if st.button("🚀 Initiate Legal Strike"):
-        if url:
-            with st.status("Executing Legal Protocols..."):
-                st.write("🔍 Scanning Target Content...")
-                time.sleep(1)
-                st.write("📝 Generating Legal Documents (v6.0)...")
-                time.sleep(1)
-                st.write("📧 Dispatching to Platform Legal Dept...")
-                time.sleep(1)
-                st.write("✅ Case ID #9921 Created.")
-            st.success("Takedown Notice Sent Successfully.")
-        else:
-            st.error("Please provide a valid URL.")
-
-elif menu == "Legal Docs (法务中心)":
-    st.markdown("## 📂 Corporate Legal Documents")
-    
-    d1, d2 = st.columns(2)
-    with d1:
-        st.download_button("📥 Download Company Terms of Service", "TOS Content", "TOS.pdf")
-    with d2:
-        st.download_button("📥 Download Privacy Policy", "Privacy Content", "Privacy.pdf")
+    with tab2:
+        st.write("### Global Threat Map")
+        st.map(pd.DataFrame({'lat': [13.7563, 16.8409], 'lon': [100.5018, 96.1735]}))
         
-    st.info("All documents are compliant with international copyright laws (Berne Convention).")
-
-# --- 底部版权 ---
-st.markdown("---")
-st.caption("© 2026 OriginGuard Solutions, Inc. | Enterprise Security Standard | Nonthaburi, Thailand HQ")
+    with tab3:
+        st.write("### AI Legal Department")
+        st.text_input("Paste Infringing URL")
+        st.button("🚀 Fire Legal Hammer")

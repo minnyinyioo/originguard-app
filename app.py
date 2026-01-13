@@ -2,6 +2,7 @@
 import streamlit as st
 import pandas as pd
 import random
+import time
 
 # ==========================================
 # 1. 核心配置 (Core Config)
@@ -10,13 +11,12 @@ st.set_page_config(
     page_title="OriginGuard Web3",
     page_icon="🛡️",
     layout="wide",
-    initial_sidebar_state="collapsed" # 默认收起侧边栏，更像官网
+    initial_sidebar_state="collapsed"
 )
 
 # ==========================================
-# 2. 法律文本常量库 (IMMUTABLE LEGAL TEXTS)
+# 2. 法律文本常量库 (IMMUTABLE LEGAL TEXTS - V3.6 STANDARD)
 # ==========================================
-# CEO 指令：以下文本为法律合同，严禁 AI 随意修改或润色。
 LEGAL_CONSTANTS = {
     "English": {
         "tos": """**1. Acceptance of Terms:** By accessing OriginGuard, you agree to be bound by these Terms. If you do not agree, do not use our services.\n\n**2. Authorized Use:** You affirm that you are the lawful copyright owner of any content you upload. Uploading stolen, illegal, or unauthorized content will result in immediate account termination and reporting to authorities.\n\n**3. Limitation of Liability:** OriginGuard is a technology provider. We provide blockchain evidence but do not guarantee specific legal outcomes in any jurisdiction.""",
@@ -42,12 +42,13 @@ LEGAL_CONSTANTS = {
 }
 
 # ==========================================
-# 3. 动态 CSS (V3.5 风格保持不变)
+# 3. 动态 CSS (V3.6 风格保持)
 # ==========================================
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Padauk:wght@400;700&family=Noto+Sans+Myanmar:wght@400;700&display=swap');
 
+    /* 动态呼吸背景 */
     @keyframes gradientBG {
         0% {background-position: 0% 50%;}
         50% {background-position: 100% 50%;}
@@ -61,7 +62,7 @@ st.markdown("""
         color: #e2e8f0;
     }
 
-    h1 {
+    h1, h2, h3 {
         background: linear-gradient(90deg, #22d3ee, #818cf8, #c084fc);
         background-size: 200% auto;
         -webkit-background-clip: text;
@@ -75,24 +76,33 @@ st.markdown("""
         100% {background-position: 200% center;}
     }
 
-    /* 底部法律导航栏样式 */
-    .legal-nav {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        margin-top: 40px;
-        padding-top: 20px;
-        border-top: 1px solid rgba(255,255,255,0.1);
-        flex-wrap: wrap;
+    /* 登录页专用样式 */
+    .login-box {
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.1);
+        padding: 40px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
     }
+    
+    /* 按钮样式优化 */
     div.stButton > button {
         background: linear-gradient(90deg, #0ea5e9 0%, #3b82f6 100%);
         color: white;
         border: none;
-        border-radius: 6px;
+        border-radius: 8px;
         font-weight: 600;
+        width: 100%;
+        transition: all 0.2s;
     }
-    /* 强制换行适配 */
+    div.stButton > button:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+    }
+
+    /* 底部法律导航栏 */
     div[data-testid="stNotification"] { word-wrap: break-word; }
 </style>
 """, unsafe_allow_html=True)
@@ -109,17 +119,31 @@ TRANS = {
         "footer_warning": "⚠️ IMPORTANT: Blockchain transactions are final. Gas fees are non-refundable.",
         "footer_copy": "© 2026 OriginGuard Solutions. Nonthaburi HQ.",
         "titles": ["Terms", "Refund", "Privacy", "SLA", "Disclaimer"],
-        "back": "⬅️ Back to Home"
+        "back": "⬅️ Back",
+        # Login Page
+        "login_title": "Identify Yourself",
+        "login_sub": "Secure Access Gateway",
+        "login_google": "Continue with Google",
+        "login_apple": "Continue with Apple",
+        "login_github": "Continue with GitHub",
+        "login_verify": "Verifying Identity..."
     },
     "中文": {
         "slogan": "捍卫你的数字资产",
         "sub_slogan": "Web3 版权保护全球标准 | 自动确权与维权",
-        "btn_launch": "🚀 启动控制台 (演示版)",
+        "btn_launch": "🚀 启动控制台",
         "live_status": "🟢 实时连接: Solana 主网区块高度 #",
         "footer_warning": "⚠️ 重要提示：区块链交易均为最终交易。Gas 费概不退款。",
         "footer_copy": "© 2026 OriginGuard Solutions. 泰国暖武里总部.",
         "titles": ["服务条款", "无退款政策", "隐私政策", "SLA承诺", "免责声明"],
-        "back": "⬅️ 返回首页"
+        "back": "⬅️ 返回",
+        # Login Page
+        "login_title": "身份验证",
+        "login_sub": "安全访问网关",
+        "login_google": "使用 Google 登录",
+        "login_apple": "使用 Apple 登录",
+        "login_github": "使用 GitHub 登录",
+        "login_verify": "正在验证身份令牌..."
     },
     "Myanmar": {
         "slogan": "ဖန်တီးမှုများကို ကာကွယ်ပါ",
@@ -129,14 +153,20 @@ TRANS = {
         "footer_warning": "⚠️ အရေးကြီးသည် - Blockchain ငွေပေးချေမှုများသည် ပြင်ဆင်၍မရပါ။ ငွေပြန်အမ်းမည် မဟုတ်ပါ။",
         "footer_copy": "© 2026 OriginGuard Solutions.",
         "titles": ["စည်းမျဉ်းများ", "ငွေပြန်မအမ်းပါ", "လုံခြုံရေး", "SLA", "ငြင်းဆိုချက်"],
-        "back": "⬅️ ပြန်သွားရန်"
+        "back": "⬅️ ပြန်သွားရန်",
+        # Login Page
+        "login_title": "အကောင့်ဝင်ပါ",
+        "login_sub": "လုံခြုံသော စနစ်သို့ ဝင်ရောက်ခြင်း",
+        "login_google": "Google ဖြင့် ဝင်မည်",
+        "login_apple": "Apple ဖြင့် ဝင်မည်",
+        "login_github": "GitHub ဖြင့် ဝင်မည်",
+        "login_verify": "အချက်အလက် စစ်ဆေးနေသည်..."
     }
 }
 
 # ==========================================
-# 5. 逻辑控制
+# 5. 逻辑控制 (Session State)
 # ==========================================
-# 侧边栏只放语言选择，保持首页干净
 lang_choice = st.sidebar.selectbox("🌐 Language / 语言", ["English", "中文", "Myanmar"], index=1)
 T = TRANS[lang_choice]
 L_TEXT = LEGAL_CONSTANTS[lang_choice]
@@ -144,26 +174,22 @@ L_TEXT = LEGAL_CONSTANTS[lang_choice]
 if 'page' not in st.session_state: st.session_state.page = 'landing'
 def set_page(name): st.session_state.page = name
 
-# --- 公共底部组件 (Public Footer) ---
+# --- 公共底部组件 ---
 def render_footer():
     st.write("")
-    st.write("")
-    st.error(T['footer_warning']) # 红色警示带
-    
-    # 法律链接矩阵 (5个按钮一排)
+    st.markdown("---")
+    st.error(T['footer_warning'])
     cols = st.columns(5)
-    labels = T['titles'] # ["Terms", "Refund", "Privacy", "SLA", "Disclaimer"]
+    labels = T['titles']
     keys = ["tos", "refund", "privacy", "sla", "disclaimer"]
-    
     for i, col in enumerate(cols):
         if col.button(labels[i], key=f"btn_{keys[i]}", use_container_width=True):
-            st.session_state.view_legal = keys[i] # 记录想看哪个条款
+            st.session_state.view_legal = keys[i]
             set_page('legal_view')
             st.rerun()
-            
     st.markdown(f"<div style='text-align: center; color: #64748b; font-size: 12px; margin-top: 20px;'>{T['footer_copy']}</div>", unsafe_allow_html=True)
 
-# --- 1. 官网首页 (Landing Page) ---
+# --- 1. 官网首页 (Landing) ---
 if st.session_state.page == 'landing':
     st.write("")
     st.markdown(f"""
@@ -173,30 +199,75 @@ if st.session_state.page == 'landing':
     </div>
     """, unsafe_allow_html=True)
     
-    # 模拟区块高度
+    # 区块跳动
     block_num = random.randint(245000000, 245999999)
     st.markdown(f"<div style='text-align: center; margin-bottom: 40px; color:#4ade80;'>{T['live_status']}{block_num}</div>", unsafe_allow_html=True)
 
     c1, c2, c3 = st.columns([1, 1, 1])
     with c2:
-        # 这里特别注明是 Console (演示版)
+        # 点击 Launch -> 进入 Login 页 (而不是直接进 Dashboard)
         if st.button(T['btn_launch'], use_container_width=True):
-            set_page('dashboard')
+            set_page('login') 
             st.rerun()
     
-    # 渲染底部 (现在每个访问者第一时间就能看到法律条款)
     render_footer()
 
-# --- 2. 控制台 (Dashboard - Demo Mode) ---
+# --- 2. 身份之门 (Login Gate) [NEW FEATURE] ---
+elif st.session_state.page == 'login':
+    st.write("")
+    st.write("")
+    
+    # 居中布局
+    c1, c2, c3 = st.columns([1, 1, 1])
+    with c2:
+        st.markdown(f"""
+        <div class="login-box">
+            <h2 style="margin-bottom: 10px;">{T['login_title']}</h2>
+            <p style="color: #94a3b8; margin-bottom: 30px;">{T['login_sub']}</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        st.write("")
+        
+        # 模拟登录按钮 (High-Fi Buttons)
+        # 点击后模拟验证过程，然后跳转 Dashboard
+        if st.button(f"🇬  {T['login_google']}", use_container_width=True):
+            with st.spinner(T['login_verify']):
+                time.sleep(1.5) # 模拟网络请求
+            set_page('dashboard')
+            st.rerun()
+            
+        st.write("")
+        if st.button(f"🍎  {T['login_apple']}", use_container_width=True):
+            with st.spinner(T['login_verify']):
+                time.sleep(1.5)
+            set_page('dashboard')
+            st.rerun()
+
+        st.write("")
+        if st.button(f"🐙  {T['login_github']}", use_container_width=True):
+            with st.spinner(T['login_verify']):
+                time.sleep(1.5)
+            set_page('dashboard')
+            st.rerun()
+            
+        st.markdown("---")
+        if st.button(T['back'], use_container_width=True):
+            set_page('landing')
+            st.rerun()
+
+    # 登录页也要有法律保护
+    render_footer()
+
+# --- 3. 控制台 (Dashboard) ---
 elif st.session_state.page == 'dashboard':
     with st.sidebar:
-        st.write("👤 **Guest / Demo User**") # 修正：不再显示 CEO，避免误会
-        st.info("Demo Mode Active")
+        st.write("👤 **Demo User**")
+        st.success("🟢 Verified")
         if st.button(T['back']): set_page('landing'); st.rerun()
 
-    st.title("📊 Security Dashboard (Demo)")
+    st.title("📊 Security Dashboard")
     
-    # 模拟数据
     k1, k2, k3, k4 = st.columns(4)
     k1.metric("Assets", "1,248")
     k2.metric("Threats", "53", "High", delta_color="inverse")
@@ -204,25 +275,28 @@ elif st.session_state.page == 'dashboard':
     k4.metric("Saved", "$12,400")
     
     st.markdown("---")
-    st.caption("Upload & Protect features are in simulation mode.")
+    tab1, tab2, tab3 = st.tabs(["🛡️ Protect", "🌍 Map", "⚖️ DMCA"])
     
-    # 依然展示底部，保持合规
+    with tab1:
+        st.file_uploader("JPG/PNG", type=['png', 'jpg'])
+        st.button("🔒 Encrypt")
+    with tab2:
+        st.map(pd.DataFrame({'lat': [13.7563], 'lon': [100.5018]}))
+    with tab3:
+        st.text_input("Infringing URL")
+        st.button("🚀 Strike")
+    
     render_footer()
 
-# --- 3. 法律条款详情页 (Legal View) ---
+# --- 4. 法律详情页 (Legal View) ---
 elif st.session_state.page == 'legal_view':
     st.button(T['back'], on_click=lambda: set_page('landing'))
     st.markdown("---")
-    
-    # 获取当前要看的条款内容
     view_key = st.session_state.get('view_legal', 'tos')
     content = L_TEXT.get(view_key, "Content not found.")
-    
-    # 渲染条款
     st.markdown(f"""
     <div style="background: rgba(15, 23, 42, 0.6); padding: 40px; border-radius: 12px; border: 1px solid #334155;">
         {content}
     </div>
     """, unsafe_allow_html=True)
-    
     render_footer()

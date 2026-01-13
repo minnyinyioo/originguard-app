@@ -104,4 +104,268 @@ st.markdown("""
     }
     
     .stApp::before {
-        content
+        content: "";
+        position: absolute;
+        top: -1000px;
+        left: 0;
+        width: 100%;
+        height: 300%;
+        background-image: 
+            radial-gradient(2px 2px at 100px 50px, #22d3ee, transparent),
+            radial-gradient(2px 2px at 300px 450px, #818cf8, transparent),
+            radial-gradient(1.5px 1.5px at 600px 100px, #ffffff, transparent);
+        background-size: 1000px 1000px;
+        animation: move-background 40s linear infinite;
+        opacity: 0.3; 
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    /* 2. 法律条款专用容器 (黑底白字，强制覆盖) */
+    .legal-box {
+        background-color: #000000 !important;
+        border: 1px solid #333;
+        padding: 25px;
+        border-radius: 12px;
+        color: #ffffff !important;
+        font-size: 16px;
+        line-height: 1.6;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        margin-bottom: 20px;
+    }
+    .legal-box h3 {
+        color: #FCD535 !important; /* 金色标题 */
+        margin-top: 0;
+        font-size: 20px;
+    }
+
+    /* 3. 按钮样式重构 */
+    /* Primary (Binance Yellow) */
+    button[kind="primary"] {
+        background: linear-gradient(90deg, #FCD535 0%, #FBC100 100%) !important;
+        color: #1e2329 !important;
+        border: none !important;
+        font-weight: 800 !important;
+    }
+    /* Secondary (Glass - Footer) */
+    div.stButton > button:not([kind="primary"]) {
+        background-color: rgba(30, 41, 59, 0.6) !important;
+        color: #e2e8f0 !important;
+        border: 1px solid rgba(148, 163, 184, 0.3) !important;
+        border-radius: 6px;
+    }
+    div.stButton > button:not([kind="primary"]):hover {
+        border-color: #FCD535 !important;
+        color: #fff !important;
+        background-color: rgba(30, 41, 59, 1) !important;
+    }
+
+    /* 4. Cookie 弹窗 (Binance Style) */
+    .cookie-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: #1e2329;
+        border-top: 2px solid #FCD535;
+        padding: 20px;
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+    }
+    
+    /* 5. 页脚标题 */
+    .footer-title {
+        color: #FCD535;
+        font-weight: 700;
+        font-size: 14px;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# ==========================================
+# 4. 语言字典
+# ==========================================
+TRANS = {
+    "English": {
+        "slogan": "Protect What You Create.",
+        "sub_slogan": "The Global Standard for Web3 Copyright Defense.",
+        "btn_launch": "🚀 LAUNCH CONSOLE",
+        "cookie_msg": "We use cookies to ensure asset security. By continuing, you agree to our Terms.",
+        "cookie_btn": "Accept & Continue",
+        "f_comm": "Community", "f_legal": "Legal", "f_prod": "Products", "f_serv": "Support",
+        "login_title": "Sign In", "login_email": "Access Code", "login_btn": "Verify & Enter", "login_error": "Invalid Code.",
+        "titles": ["Terms", "Refund", "Privacy", "SLA", "Disclaimer"]
+    },
+    "中文": {
+        "slogan": "捍卫你的数字资产",
+        "sub_slogan": "Web3 版权保护全球标准 | 自动确权与维权",
+        "btn_launch": "🚀 启动控制台",
+        "cookie_msg": "我们使用 Cookie 保障您的资产安全。继续使用即表示您同意我们的条款。",
+        "cookie_btn": "接受并继续",
+        "f_comm": "官方社区", "f_legal": "法律条款", "f_prod": "产品中心", "f_serv": "客户支持",
+        "login_title": "登录", "login_email": "访问密钥", "login_btn": "验证并进入", "login_error": "密钥错误。",
+        "titles": ["服务条款", "无退款政策", "隐私政策", "SLA承诺", "免责声明"]
+    },
+    "Myanmar": {
+        "slogan": "ဖန်တီးမှုများကို ကာကွယ်ပါ",
+        "sub_slogan": "Web3 မူပိုင်ခွင့် ကာကွယ်ရေး",
+        "btn_launch": "🚀 စနစ်စတင်မည်",
+        "cookie_msg": "သင့်လုံခြုံရေးအတွက် Cookie အသုံးပြုပါသည်။",
+        "cookie_btn": "လက်ခံမည်",
+        "f_comm": "ကွန်မြူနတီ", "f_legal": "ဥပဒေ", "f_prod": "ထုတ်ကုန်များ", "f_serv": "ဝန်ဆောင်မှု",
+        "login_title": "အကောင့်ဝင်ပါ", "login_email": "စကားဝှက်", "login_btn": "ဝင်မည်", "login_error": "မှားယွင်းနေသည်။",
+        "titles": ["စည်းမျဉ်းများ", "ငွေပြန်မအမ်းပါ", "လုံခြုံရေး", "SLA", "ငြင်းဆိုချက်"]
+    }
+}
+
+# ==========================================
+# 5. 逻辑控制
+# ==========================================
+lang_choice = st.sidebar.selectbox("🌐 Language", ["English", "中文", "Myanmar"], index=1)
+T = TRANS[lang_choice]
+L_TEXT = LEGAL_CONSTANTS[lang_choice]
+
+if 'page' not in st.session_state: st.session_state.page = 'landing'
+if 'auth' not in st.session_state: st.session_state.auth = False
+if 'cookies_accepted' not in st.session_state: st.session_state.cookies_accepted = False
+
+def set_page(name): st.session_state.page = name
+
+# --- 组件：大页脚 (Binance Style) ---
+def render_fat_footer():
+    st.write("")
+    st.markdown("---")
+    
+    c1, c2, c3, c4 = st.columns(4)
+    
+    with c1:
+        st.markdown(f"<div class='footer-title'>{T['f_comm']}</div>", unsafe_allow_html=True)
+        st.button("👾 Discord", use_container_width=True)
+        st.button("🐦 Twitter / X", use_container_width=True)
+        st.button("✈️ Telegram", use_container_width=True)
+
+    with c2:
+        st.markdown(f"<div class='footer-title'>{T['f_legal']}</div>", unsafe_allow_html=True)
+        # 点击法律按钮，跳转到 legal_view
+        if st.button("Terms (ToS)", key="ft1", use_container_width=True): 
+            st.session_state.view_legal = "tos"; set_page('legal_view'); st.rerun()
+        if st.button("No Refunds", key="ft2", use_container_width=True):
+            st.session_state.view_legal = "refund"; set_page('legal_view'); st.rerun()
+        if st.button("Privacy", key="ft3", use_container_width=True):
+            st.session_state.view_legal = "privacy"; set_page('legal_view'); st.rerun()
+
+    with c3:
+        st.markdown(f"<div class='footer-title'>{T['f_prod']}</div>", unsafe_allow_html=True)
+        st.button("API Docs", disabled=True, use_container_width=True)
+        st.button("Solana Scan", disabled=True, use_container_width=True)
+
+    with c4:
+        st.markdown(f"<div class='footer-title'>{T['f_serv']}</div>", unsafe_allow_html=True)
+        st.button("SLA Guarantee", use_container_width=True)
+        st.info("✉️ support@originguard.com")
+
+    st.markdown("<div style='text-align:center; color:#64748b; font-size:12px; margin-top:30px;'>© 2026 OriginGuard Solutions Inc.</div>", unsafe_allow_html=True)
+    
+    # Cookie Banner
+    if not st.session_state.cookies_accepted:
+        st.markdown(f"""
+        <div class="cookie-banner">
+            <span style="color:#fff; font-size:16px; margin-right:20px;">🍪 {T['cookie_msg']}</span>
+        </div>
+        """, unsafe_allow_html=True)
+        # 按钮在 Streamlit 布局中渲染
+        c_k1, c_k2, c_k3 = st.columns([1,1,1])
+        with c_k2:
+             if st.button(T['cookie_btn'], type="primary", use_container_width=True, key="cookie_accept"):
+                st.session_state.cookies_accepted = True
+                st.rerun()
+
+# --- 1. 官网首页 ---
+if st.session_state.page == 'landing':
+    st.write("")
+    st.markdown(f"""
+    <div style="text-align: center; padding: 60px 0;">
+        <h1 style="font-size: 64px; margin-bottom: 20px;">{T['slogan']}</h1>
+        <p style="font-size: 24px; color: #f8fafc; font-weight:600;">{T['sub_slogan']}</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    block_num = random.randint(245000000, 245999999)
+    st.markdown(f"<div style='text-align: center; margin-bottom: 40px; color:#FCD535; font-weight:bold;'>🟢 Solana Mainnet Block #{block_num}</div>", unsafe_allow_html=True)
+
+    c1, c2, c3 = st.columns([1, 1, 1])
+    with c2:
+        if st.button(T['btn_launch'], use_container_width=True, type="primary"):
+            set_page('login'); st.rerun()
+            
+    render_fat_footer()
+
+# --- 2. 真实登录页 ---
+elif st.session_state.page == 'login':
+    st.write("")
+    c1, c2, c3 = st.columns([1, 1, 1])
+    with c2:
+        st.markdown(f"## {T['login_title']}")
+        pwd = st.text_input(T['login_email'], type="password")
+        if st.button(T['login_btn'], type="primary", use_container_width=True):
+            if pwd == "origin2026":
+                with st.spinner("Connecting..."): time.sleep(1)
+                st.session_state.auth = True; set_page('dashboard'); st.rerun()
+            else:
+                st.error(T['login_error'])
+        
+        st.markdown("---")
+        st.button("🇬 Google", use_container_width=True)
+        st.button("🍎 Apple", use_container_width=True)
+        if st.button("⬅️ Back", use_container_width=True): set_page('landing'); st.rerun()
+        
+    render_fat_footer()
+
+# --- 3. 控制台 ---
+elif st.session_state.page == 'dashboard':
+    if not st.session_state.auth: set_page('login'); st.rerun()
+    
+    with st.sidebar:
+        st.success("🟢 CEO: MNNO")
+        if st.button("Log Out"): st.session_state.auth=False; set_page('landing'); st.rerun()
+
+    st.title("📊 Dashboard")
+    k1, k2, k3, k4 = st.columns(4)
+    k1.metric("Assets", "1,248")
+    k2.metric("Threats", "53", "High", delta_color="inverse")
+    k3.metric("Legal", "41")
+    k4.metric("Saved", "$12,400")
+    
+    st.markdown("---")
+    t1, t2 = st.tabs(["🛡️ Protect", "⚖️ Legal Hammer"])
+    with t1:
+        st.file_uploader("Upload Image", type=['png','jpg'])
+        st.button("Encrypt", type="primary")
+    with t2:
+        st.text_input("Infringing URL")
+        st.button("Send Notice", type="primary")
+
+    render_fat_footer()
+
+# --- 4. 法律详情页 (High Contrast) ---
+elif st.session_state.page == 'legal_view':
+    st.button("⬅️ Back", on_click=lambda: set_page('landing'))
+    st.markdown("---")
+    
+    key = st.session_state.get('view_legal', 'tos')
+    content = L_TEXT.get(key, "Error")
+    
+    # 使用自定义 CSS 类 .legal-box 渲染纯黑底白字
+    st.markdown(f"""
+    <div class="legal-box">
+        {content}
+    </div>
+    """, unsafe_allow_html=True)
+    
+    render_fat_footer()

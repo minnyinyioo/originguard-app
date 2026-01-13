@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import streamlit as st
 import pandas as pd
+import time
+import random
 
 # ==========================================
-# 1. 核心配置与 Web3 皮肤 (Core Config & Style)
+# 1. 核心配置与动态引擎 (Core Config & Dynamic Engine)
 # ==========================================
 st.set_page_config(
     page_title="OriginGuard Web3",
@@ -12,187 +14,178 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- 🎨 CSS 注入：强制加载缅语字体 + 移动端防爆版 ---
+# --- 🎨 CSS 动态注入：呼吸光效 + 悬浮反馈 ---
 st.markdown("""
 <style>
-    /* 1. 引入字体库：Padauk (缅文首选), Noto Sans Myanmar (缅文备选), Inter (英文) */
+    /* 1. 字体库：Padauk (缅文首选) */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Padauk:wght@400;700&family=Noto+Sans+Myanmar:wght@400;700&display=swap');
 
-    /* 2. 全局强制字体策略 (!important 解决乱码核心) */
-    html, body, [class*="css"] {
-        font-family: 'Inter', 'Padauk', 'Noto Sans Myanmar', sans-serif !important;
+    /* 2. 动态背景：流动的深海光影 (60秒循环一次) */
+    @keyframes gradientBG {
+        0% {background-position: 0% 50%;}
+        50% {background-position: 100% 50%;}
+        100% {background-position: 0% 50%;}
     }
-
-    /* 3. 背景：深空灰蓝 Web3 渐变 */
     .stApp {
-        background: linear-gradient(180deg, #020617 0%, #0f172a 100%);
+        background: linear-gradient(-45deg, #020617, #0f172a, #1e1b4b, #0f172a);
+        background-size: 400% 400%;
+        animation: gradientBG 60s ease infinite;
+        font-family: 'Inter', 'Padauk', 'Noto Sans Myanmar', sans-serif !important;
         color: #e2e8f0;
     }
 
-    /* 4. 标题高亮：青色渐变 & 增加行高防止缅语被切头 */
-    h1, h2, h3 {
-        background: -webkit-linear-gradient(45deg, #22d3ee, #818cf8);
+    /* 3. 标题特效：全息渐变 + 呼吸感 */
+    h1 {
+        background: linear-gradient(90deg, #22d3ee, #818cf8, #c084fc);
+        background-size: 200% auto;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        font-weight: 800 !important;
-        line-height: 1.6 !important; /* 修复缅语字符上下标显示不全 */
-        padding-bottom: 10px;
+        font-weight: 900 !important;
+        letter-spacing: -1px;
+        animation: gradientText 5s linear infinite;
     }
-    
-    /* 5. 侧边栏样式 */
-    section[data-testid="stSidebar"] {
-        background-color: #0b1121;
-        border-right: 1px solid #1e293b;
+    @keyframes gradientText {
+        0% {background-position: 0% center;}
+        100% {background-position: 200% center;}
     }
-    
-    /* 6. 按钮：Web3 霓虹蓝 */
+
+    /* 4. 卡片悬浮特效：鼠标放上去会浮起 + 发光 */
+    div[data-testid="stMetric"], div.stInfo, div.stWarning, div.stError, div.stSuccess {
+        background-color: rgba(30, 41, 59, 0.5); /* 半透明玻璃态 */
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        transition: all 0.3s ease;
+    }
+    div[data-testid="stMetric"]:hover, div.stInfo:hover {
+        transform: translateY(-5px); /* 上浮 */
+        border-color: #22d3ee; /* 变亮 */
+        box-shadow: 0 10px 30px -10px rgba(34, 211, 238, 0.3);
+    }
+
+    /* 5. 按钮：脉冲光环 (吸引点击) */
     div.stButton > button {
         background: linear-gradient(90deg, #0ea5e9 0%, #3b82f6 100%);
         color: white;
         border: none;
         border-radius: 8px;
         font-weight: 700;
-        box-shadow: 0 0 10px rgba(14, 165, 233, 0.3);
         transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
     }
     div.stButton > button:hover {
-        transform: scale(1.02);
-        box-shadow: 0 0 20px rgba(14, 165, 233, 0.6);
-        color: #fff;
+        transform: scale(1.05);
+        box-shadow: 0 0 25px rgba(14, 165, 233, 0.7);
     }
-
-    /* 7. 法律条款框 (Cyberpunk 风格) & 强制换行 */
-    div[data-testid="stNotification"] {
-        background-color: #1e293b;
-        border: 1px solid #334155;
-        color: #f8fafc;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        word-wrap: break-word; /* 防止长句子撑爆手机屏幕 */
+    
+    /* 6. 侧边栏优化 */
+    section[data-testid="stSidebar"] {
+        background-color: #020617;
+        border-right: 1px solid #1e293b;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 2. 语言字典库 (Translation Matrix - Verified)
+# 2. 语言字典库 (Translation Matrix)
 # ==========================================
-# CTO 注：缅语部分已检查，使用标准 Unicode 编码，配合上述 CSS 可完美显示。
 TRANS = {
     "English": {
         "slogan": "Protect What You Create.",
-        "sub_slogan": "Web3 Copyright Protection | AI Watermarking | Blockchain Evidence",
+        "sub_slogan": "The Global Standard for Web3 Copyright Defense.",
+        "live_status": "🟢 LIVE: Solana Mainnet Block #",
         "btn_launch": "🚀 LAUNCH CONSOLE",
-        "core_tech": "Core Technology",
-        "tech_1_t": "Invisible Watermark",
-        "tech_1_d": "AI-embedded DNA in pixels.",
-        "tech_2_t": "Blockchain Proof",
-        "tech_2_d": "Immutable Solana Certificates.",
-        "tech_3_t": "AI Legal Hammer",
-        "tech_3_d": "Auto-send DMCA notices.",
-        "dash_title": "Security Dashboard",
-        "sidebar_title": "Console",
+        "core_tech": "Core Defense Matrix",
+        "tech_1_t": "Invisible DNA",
+        "tech_1_d": "AI-embedded watermarks immune to cropping.",
+        "tech_2_t": "On-Chain Truth",
+        "tech_2_d": "Immutable Solana certificates.",
+        "tech_3_t": "Auto-Strike",
+        "tech_3_d": "Instant DMCA legal takedowns.",
+        "sidebar_title": "Command Center",
         "role": "CEO / Admin",
-        "status": "🟢 System Online",
-        "btn_logout": "⬅️ Log Out",
-        "btn_legal": "⚖️ Legal Center", 
-        "btn_back_dash": "⬅️ Back to Dashboard",
-        "legal_page_title": "Legal & Compliance Center",
-        
-        # --- 法律条款 (English) ---
-        "policy_tos_t": "📜 Terms of Service (ToS)",
-        "policy_tos_d": "By using OriginGuard, you agree that you are the lawful owner of any uploaded assets. We strictly prohibit the protection of stolen content. Violators will have their accounts terminated immediately.",
-        "policy_disclaimer_t": "⚠️ Legal Disclaimer",
-        "policy_disclaimer_d": "OriginGuard provides technological evidence (hash/metadata) for copyright claims. We are a technology provider, not a law firm. Our automated DMCA notices are tools for your use; we do not guarantee specific legal outcomes in court.",
-        "policy_refund_t": "🚫 No-Refund Policy",
-        "policy_refund_d": "Blockchain transactions are irreversible. Once a certificate is minted on Solana, gas fees are burned. Therefore, all sales are final and non-refundable.",
-        "policy_sla_t": "⚡ Service Level Agreement (SLA)",
-        "policy_sla_d": "We guarantee 99.9% system uptime. Scheduled maintenance will be notified 24 hours in advance.",
-        "policy_privacy_t": "🔒 Privacy Policy",
-        "policy_privacy_d": "We collect minimal data required for blockchain hashing. Your original files are encrypted locally and never sold to third parties.",
-        "policy_copyright_t": "© Intellectual Property Notice",
-        "policy_copyright_d": "The OriginGuard algorithm, UI design, and 'Invisible DNA' technology are proprietary intellectual property of OriginGuard Solutions Inc.",
-        
-        "footer": "© 2026 OriginGuard Solutions. All rights reserved."
+        "btn_legal": "⚖️ Legal & Compliance", 
+        "btn_back": "⬅️ Back",
+        "btn_logout": "Log Out",
+        # Legal
+        "legal_title": "Legal Shield",
+        "tos": "Terms of Service",
+        "tos_d": "We prohibit protection of stolen assets. Violators banned.",
+        "refund": "No-Refund Policy",
+        "refund_d": "Blockchain actions are irreversible. All sales final.",
+        "sla": "SLA Guarantee",
+        "sla_d": "99.9% Uptime for Enterprise users.",
+        "privacy": "Data Privacy",
+        "privacy_d": "Your original files are encrypted locally.",
+        "footer": "© 2026 OriginGuard Solutions. Nonthaburi HQ."
     },
     "中文": {
         "slogan": "捍卫你的数字资产",
-        "sub_slogan": "Web3 版权保护 | AI 隐形水印 | 区块链存证",
+        "sub_slogan": "Web3 版权保护全球标准 | 自动确权与维权",
+        "live_status": "🟢 实时连接: Solana 主网区块高度 #",
         "btn_launch": "🚀 启动控制台",
-        "core_tech": "核心技术矩阵",
-        "tech_1_t": "隐形水印",
-        "tech_1_d": "像素级 AI 植入，肉眼不可见。",
-        "tech_2_t": "区块链存证",
-        "tech_2_d": "Solana 链上永久确权证书。",
-        "tech_3_t": "AI 法律重锤",
-        "tech_3_d": "自动发送跨国律师函。",
-        "dash_title": "安全控制台",
-        "sidebar_title": "管理中心",
+        "core_tech": "核心防御矩阵",
+        "tech_1_t": "隐形 DNA",
+        "tech_1_d": "免疫裁剪和压缩的 AI 隐形水印。",
+        "tech_2_t": "链上真理",
+        "tech_2_d": "不可篡改的 Solana 永久证书。",
+        "tech_3_t": "自动打击",
+        "tech_3_d": "毫秒级生成跨国 DMCA 律师函。",
+        "sidebar_title": "指挥中心",
         "role": "CEO / 管理员",
-        "status": "🟢 系统运行中",
-        "btn_logout": "⬅️ 退出登录",
-        "btn_legal": "⚖️ 法务中心",
-        "btn_back_dash": "⬅️ 返回控制台",
-        "legal_page_title": "法律合规与声明",
-        
-        # --- 法律条款 (中文) ---
-        "policy_tos_t": "📜 服务条款 (ToS)",
-        "policy_tos_d": "使用 OriginGuard 即表示您同意您是上传资产的合法拥有者。我们严禁利用本平台保护盗版内容。违规账号将被立即封禁。",
-        "policy_disclaimer_t": "⚠️ 免责声明",
-        "policy_disclaimer_d": "OriginGuard 提供用于版权主张的技术证据（哈希/元数据）。我们是技术提供商，而非律师事务所。自动生成的律师函仅供您使用，我们不承诺特定法庭判决结果。",
-        "policy_refund_t": "🚫 无退款政策",
-        "policy_refund_d": "区块链交易不可逆转。一旦证书在 Solana 上铸造，Gas 费即被消耗。因此，所有销售均为最终决定，概不退款。",
-        "policy_sla_t": "⚡ 服务等级协议 (SLA)",
-        "policy_sla_d": "我们承诺 99.9% 的系统正常运行时间。计划维护将提前 24 小时通知。",
-        "policy_privacy_t": "🔒 隐私政策",
-        "policy_privacy_d": "我们仅收集区块链哈希所需的最小化数据。您的源文件在本地加密，绝不出售给第三方。",
-        "policy_copyright_t": "© 知识产权声明",
-        "policy_copyright_d": "OriginGuard 的算法、UI 设计及“隐形 DNA”技术均为 OriginGuard Solutions Inc. 的专有知识产权。",
-        
-        "footer": "© 2026 OriginGuard Solutions. 版权所有。"
+        "btn_legal": "⚖️ 法务合规中心",
+        "btn_back": "⬅️ 返回",
+        "btn_logout": "退出登录",
+        # Legal
+        "legal_title": "法律护盾",
+        "tos": "服务条款 (ToS)",
+        "tos_d": "严禁保护盗版内容。违规者将立即封号。",
+        "refund": "无退款政策",
+        "refund_d": "区块链操作不可逆，Gas 费实时消耗。概不退款。",
+        "sla": "SLA 服务承诺",
+        "sla_d": "企业级用户享受 99.9% 在线率保证。",
+        "privacy": "数据隐私",
+        "privacy_d": "源文件本地加密，绝不触网泄露。",
+        "footer": "© 2026 OriginGuard Solutions. 泰国暖武里总部."
     },
     "Myanmar": {
         "slogan": "ဖန်တီးမှုများကို ကာကွယ်ပါ",
-        "sub_slogan": "Web3 မူပိုင်ခွင့် ကာကွယ်ရေး | AI နည်းပညာ | Blockchain သက်သေ",
+        "sub_slogan": "Web3 မူပိုင်ခွင့် ကာကွယ်ရေး | ကမ္ဘာ့အဆင့်မီ နည်းပညာ",
+        "live_status": "🟢 တိုက်ရိုက်: Solana Mainnet Block #",
         "btn_launch": "🚀 စနစ်စတင်မည်",
         "core_tech": "အဓိက နည်းပညာများ",
         "tech_1_t": "မမြင်ရသော ရေစာ",
         "tech_1_d": "AI နည်းပညာဖြင့် ပုံရိပ်ထဲတွင် မြှုပ်နှံထားသည်။",
         "tech_2_t": "Blockchain သက်သေ",
         "tech_2_d": "Solana ပေါ်တွင် ဖျက်၍မရသော မှတ်တမ်း။",
-        "tech_3_t": "AI ဥပဒေ လက်နက်",
-        "tech_3_d": "DMCA တိုင်ကြားစာ အလိုအလျောက် ပေးပို့ခြင်း။",
-        "dash_title": "လုံခြုံရေး ဒက်ရှ်ဘုတ်",
+        "tech_3_t": "အလိုအလျောက် တိုင်ကြားခြင်း",
+        "tech_3_d": "DMCA တိုင်ကြားစာ ချက်ချင်းပို့မည်။",
         "sidebar_title": "ထိန်းချုပ်ခန်း",
         "role": "CEO / အက်ဒမင်",
-        "status": "🟢 စနစ် အလုပ်လုပ်နေသည်",
-        "btn_logout": "⬅️ ထွက်မည်",
         "btn_legal": "⚖️ ဥပဒေဌာန",
-        "btn_back_dash": "⬅️ ဒက်ရှ်ဘုတ် သို့ပြန်သွားရန်",
-        "legal_page_title": "ဥပဒေနှင့် စည်းမျဉ်းများ",
-        
-        # --- 法律条款 (缅文 - 使用 Padauk 字体渲染) ---
-        "policy_tos_t": "📜 ဝန်ဆောင်မှု စည်းမျဉ်းများ (Terms of Service)",
-        "policy_tos_d": "OriginGuard ကို အသုံးပြုခြင်းဖြင့် သင်သည် ပိုင်ဆိုင်မှုများ၏ တရားဝင်ပိုင်ရှင်ဖြစ်ကြောင်း သဘောတူပါသည်။ သူတစ်ပါးပိုင်ဆိုင်မှုကို ခိုးယူအသုံးပြုခြင်းကို တားမြစ်သည်။",
-        "policy_disclaimer_t": "⚠️ ဥပဒေကြောင်းအရ ငြင်းဆိုချက် (Disclaimer)",
-        "policy_disclaimer_d": "OriginGuard သည် နည်းပညာ အထောက်အထားများကိုသာ ပံ့ပိုးပေးပါသည်။ ကျွန်ုပ်တို့သည် ရှေ့နေရုံးမဟုတ်ပါ။ တရားရုံးဆုံးဖြတ်ချက်များအတွက် အာမခံချက်မပေးပါ။",
-        "policy_refund_t": "🚫 ငွေပြန်အမ်းမည်မဟုတ်ပါ (No Refund)",
-        "policy_refund_d": "Solana Blockchain တွင် မှတ်တမ်းတင်ပြီးပါက ပြန်လည်ပြင်ဆင်၍မရပါ။ ထို့ကြောင့် ငွေပြန်အမ်းခြင်း မပြုလုပ်နိုင်ပါ။",
-        "policy_sla_t": "⚡ ဝန်ဆောင်မှု အာမခံချက် (SLA)",
-        "policy_sla_d": "စနစ်ပိုင်းဆိုင်ရာ ၉၉.၉% အချိန်ပြည့် အလုပ်လုပ်မည်ဟု အာမခံပါသည်။",
-        "policy_privacy_t": "🔒 ကိုယ်ပိုင်အချက်အလက် လုံခြုံရေး (Privacy)",
-        "policy_privacy_d": "သင်၏ အချက်အလက်များကို ရောင်းချခြင်း မပြုပါ။ လုံခြုံစွာ သိမ်းဆည်းထားမည်။",
-        "policy_copyright_t": "© မူပိုင်ခွင့် အသိပေးချက်",
-        "policy_copyright_d": "OriginGuard ၏ နည်းပညာနှင့် ဒီဇိုင်းများသည် ကုမ္ပဏီ၏ မူပိုင်ခွင့်များ ဖြစ်သည်။",
-        
-        "footer": "© 2026 OriginGuard Solutions. မူပိုင်ခွင့် ရယူထားသည်။"
+        "btn_back": "⬅️ ပြန်သွားရန်",
+        "btn_logout": "ထွက်မည်",
+        # Legal
+        "legal_title": "ဥပဒေနှင့် စည်းမျဉ်းများ",
+        "tos": "ဝန်ဆောင်မှု စည်းမျဉ်းများ",
+        "tos_d": "သူတစ်ပါးပိုင်ဆိုင်မှုကို ခိုးယူအသုံးပြုခြင်းကို တားမြစ်သည်။",
+        "refund": "ငွေပြန်အမ်းမည်မဟုတ်ပါ (No Refund)",
+        "refund_d": "Blockchain တွင် မှတ်တမ်းတင်ပြီးပါက ပြန်လည်ပြင်ဆင်၍မရပါ။",
+        "sla": "ဝန်ဆောင်မှု အာမခံချက်",
+        "sla_d": "၉၉.၉% အချိန်ပြည့် အလုပ်လုပ်မည်။",
+        "privacy": "ကိုယ်ပိုင်အချက်အလက် လုံခြုံရေး",
+        "privacy_d": "သင်၏ အချက်အလက်များကို လုံခြုံစွာ သိမ်းဆည်းထားမည်။",
+        "footer": "© 2026 OriginGuard Solutions."
     }
 }
 
 # ==========================================
-# 3. 语言选择与路由逻辑
+# 3. 逻辑控制 (Logic Control)
 # ==========================================
 lang_choice = st.sidebar.selectbox(
-    "🌐 Language / ဘာသာစကား / 语言",
+    "🌐 Language / ဘာသာစကား",
     ["English", "中文", "Myanmar"],
     index=1
 )
@@ -204,18 +197,31 @@ if 'page' not in st.session_state:
 def set_page(page_name):
     st.session_state.page = page_name
 
-# --- 1. 落地页 (Landing Page) ---
+# --- 1. 动态落地页 (Dynamic Landing Page) ---
 if st.session_state.page == 'landing':
+    
     st.write("")
-    st.write("")
+    # 动态标题区
     st.markdown(f"""
-    <div style="text-align: center; padding: 40px 0;">
-        <h1 style="font-size: 56px; margin-bottom: 20px;">{T['slogan']}</h1>
-        <p style="font-size: 20px; color: #94a3b8; max-width: 800px; margin: 0 auto;">{T['sub_slogan']}</p>
+    <div style="text-align: center; padding: 60px 0;">
+        <h1 style="font-size: 60px; margin-bottom: 20px;">{T['slogan']}</h1>
+        <p style="font-size: 22px; color: #cbd5e1; max-width: 800px; margin: 0 auto; text-shadow: 0 0 10px rgba(0,0,0,0.5);">
+            {T['sub_slogan']}
+        </p>
     </div>
     """, unsafe_allow_html=True)
     
-    st.write("")
+    # 模拟“实时数据流” (增加信任感)
+    live_block = random.randint(245000000, 245999999)
+    st.markdown(f"""
+    <div style="text-align: center; margin-bottom: 40px;">
+        <span style="background: rgba(34, 197, 94, 0.2); color: #4ade80; padding: 5px 15px; border-radius: 20px; font-family: monospace; font-size: 14px; border: 1px solid #22c55e;">
+            {T['live_status']}{live_block}
+        </span>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # 巨大的启动按钮
     c1, c2, c3 = st.columns([1, 1, 1])
     with c2:
         if st.button(T['btn_launch'], use_container_width=True):
@@ -223,17 +229,17 @@ if st.session_state.page == 'landing':
             st.rerun()
 
     st.markdown("---")
+    
+    # 悬浮卡片展示核心技术
     st.subheader(T['core_tech'])
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        st.info(T['tech_1_t'])
-        st.caption(T['tech_1_d'])
-    with c2:
-        st.info(T['tech_2_t'])
-        st.caption(T['tech_2_d'])
-    with c3:
-        st.info(T['tech_3_t'])
-        st.caption(T['tech_3_d'])
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.info(f"**{T['tech_1_t']}**\n\n{T['tech_1_d']}")
+    with col2:
+        st.info(f"**{T['tech_2_t']}**\n\n{T['tech_2_d']}")
+    with col3:
+        st.info(f"**{T['tech_3_t']}**\n\n{T['tech_3_d']}")
+
     st.markdown("---")
     st.caption(T['footer'])
 
@@ -241,10 +247,9 @@ if st.session_state.page == 'landing':
 elif st.session_state.page == 'dashboard':
     with st.sidebar:
         st.title(T['sidebar_title'])
-        st.write(f"👤 **MNNO** ({T['role']})")
-        st.success(T['status'])
+        st.write(f"👤 **MNNO**")
+        st.success("🟢 ONLINE")
         st.markdown("---")
-        # 法务中心入口
         if st.button(T['btn_legal']):
             set_page('legal')
             st.rerun()
@@ -253,59 +258,46 @@ elif st.session_state.page == 'dashboard':
             set_page('landing')
             st.rerun()
 
-    st.title(T['dash_title'])
+    st.title("📊 " + T['sidebar_title'])
+    
+    # 动态数据展示
     k1, k2, k3, k4 = st.columns(4)
-    k1.metric("Protected", "1,248")
-    k2.metric("Blocked", "53", "High", delta_color="inverse")
-    k3.metric("Actions", "41")
+    k1.metric("Assets", "1,248", "+12")
+    k2.metric("Threats", "53", "High Alert", delta_color="inverse")
+    k3.metric("Legal", "41", "+3")
     k4.metric("Saved", "$12,400")
 
     st.markdown("---")
-    tab1, tab2, tab3 = st.tabs(["🛡️ Protect", "🌍 Map", "⚖️ Legal"])
+    tab1, tab2, tab3 = st.tabs(["🛡️ Protect", "🌍 Map", "⚖️ DMCA"])
+    
     with tab1:
-        st.file_uploader("JPG / PNG", type=['png', 'jpg'])
-        st.button("🔒 Encrypt & Mint")
+        st.file_uploader("JPG/PNG", type=['png', 'jpg'])
+        st.button("🔒 Encrypt")
     with tab2:
         st.map(pd.DataFrame({'lat': [13.7563], 'lon': [100.5018]}))
     with tab3:
-        st.text_input("URL")
-        st.button("🚀 DMCA")
+        st.text_input("Infringing URL")
+        st.button("🚀 Strike")
 
-# --- 3. 法务中心 (Legal Center) [大厂级合规页面] ---
+# --- 3. 法务中心 (Legal) ---
 elif st.session_state.page == 'legal':
     with st.sidebar:
         st.title(T['sidebar_title'])
-        st.write(f"👤 **MNNO** ({T['role']})")
-        st.markdown("---")
-        if st.button(T['btn_back_dash']):
+        if st.button(T['btn_back']):
             set_page('dashboard')
             st.rerun()
-        if st.button(T['btn_logout']):
-            set_page('landing')
-            st.rerun()
 
-    st.title(T['legal_page_title'])
-    st.write("Last Updated: January 13, 2026")
+    st.title(T['legal_title'])
     st.markdown("---")
-
-    # 分栏布局：模仿 Coinbase/Binance 的条款展示
-    col1, col2 = st.columns(2)
     
-    with col1:
-        # 服务条款 (ToS)
-        st.warning(f"### {T['policy_tos_t']}\n\n{T['policy_tos_d']}")
-        # 隐私政策
-        st.success(f"### {T['policy_privacy_t']}\n\n{T['policy_privacy_d']}")
-        # 知识产权
-        st.info(f"### {T['policy_copyright_t']}\n\n{T['policy_copyright_d']}")
-        
-    with col2:
-        # 免责声明 (Disclaimer) - 关键防身条款
-        st.error(f"### {T['policy_disclaimer_t']}\n\n{T['policy_disclaimer_d']}")
-        # 无退款政策
-        st.error(f"### {T['policy_refund_t']}\n\n{T['policy_refund_d']}")
-        # SLA
-        st.info(f"### {T['policy_sla_t']}\n\n{T['policy_sla_d']}")
+    c1, c2 = st.columns(2)
+    with c1:
+        st.warning(f"### {T['tos']}\n{T['tos_d']}")
+        st.success(f"### {T['privacy']}\n{T['privacy_d']}")
+    with c2:
+        st.error(f"### {T['refund']}\n{T['refund_d']}")
+        st.info(f"### {T['sla']}\n{T['sla_d']}")
     
     st.markdown("---")
-    st.caption("Compliance Framework v3.3 | Contact: legal@originguard.com")
+    st.caption("OriginGuard Compliance Engine v3.4")
+    

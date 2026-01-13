@@ -17,7 +17,6 @@ st.set_page_config(
 # ==========================================
 # 2. 法律文本常量库 (IMMUTABLE LEGAL TEXTS)
 # ==========================================
-# 严禁修改合同内容
 LEGAL_CONSTANTS = {
     "English": {
         "tos": """**1. Acceptance of Terms:** By accessing OriginGuard, you agree to be bound by these Terms. If you do not agree, do not use our services.\n\n**2. Authorized Use:** You affirm that you are the lawful copyright owner of any content you upload. Uploading stolen, illegal, or unauthorized content will result in immediate account termination and reporting to authorities.\n\n**3. Limitation of Liability:** OriginGuard is a technology provider. We provide blockchain evidence but do not guarantee specific legal outcomes in any jurisdiction.""",
@@ -43,7 +42,7 @@ LEGAL_CONSTANTS = {
 }
 
 # ==========================================
-# 3. 动态 CSS (V3.9 晶透高亮版)
+# 3. 动态 CSS (V3.9.1 视觉修复版)
 # ==========================================
 st.markdown("""
 <style>
@@ -56,8 +55,7 @@ st.markdown("""
     }
     .stApp {
         background: radial-gradient(circle at 50% 50%, #0f172a 0%, #020617 100%);
-        /* 全局字体颜色改为极亮白，解决“看不清”问题 */
-        color: #f8fafc !important; 
+        color: #ffffff !important; 
         font-family: 'Inter', 'Padauk', 'Noto Sans Myanmar', sans-serif !important;
     }
     
@@ -75,12 +73,12 @@ st.markdown("""
             radial-gradient(1.5px 1.5px at 600px 100px, #ffffff, transparent);
         background-size: 1000px 1000px;
         animation: move-background 40s linear infinite;
-        opacity: 0.4;
+        opacity: 0.3; /* 降低不透明度，防止干扰文字 */
         z-index: 0;
         pointer-events: none;
     }
 
-    /* 2. 标题流光 + 字幕浮动 (New Feature) */
+    /* 2. 标题流光 */
     h1 {
         background: linear-gradient(90deg, #22d3ee, #a78bfa, #c084fc);
         background-size: 200% auto;
@@ -89,60 +87,59 @@ st.markdown("""
         font-weight: 900 !important;
         letter-spacing: -1px;
         animation: gradientText 4s linear infinite;
-        text-shadow: 0 0 20px rgba(34, 211, 238, 0.3); /* 增加发光，提高清晰度 */
+        text-shadow: 0 0 30px rgba(34, 211, 238, 0.4); 
     }
     
-    /* 悬浮动画：用于副标题和说明文字 */
-    @keyframes float-text {
-        0% { transform: translateY(0px); }
-        50% { transform: translateY(-8px); }
-        100% { transform: translateY(0px); }
-    }
-    .floating-text {
-        animation: float-text 6s ease-in-out infinite;
-        color: #e2e8f0; /* 亮灰白 */
-        text-shadow: 0 2px 4px rgba(0,0,0,0.8); /* 黑色阴影衬托文字 */
-    }
-
     @keyframes gradientText {
         0% {background-position: 0% center;}
         100% {background-position: 200% center;}
     }
 
-    /* 3. 卡片与容器：加深背景色，提高文字对比度 */
+    /* 3. 按钮样式重构 (解决白底白字问题) */
+    
+    /* 类型A: Primary Button (用于 Launch, Sign In, Google等) - 渐变色背景 */
+    button[kind="primary"] {
+        background: linear-gradient(90deg, #0ea5e9 0%, #3b82f6 100%) !important;
+        color: white !important;
+        border: none !important;
+        font-weight: 700 !important;
+        box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
+    }
+    
+    /* 类型B: Secondary Button (用于 Footer, 社交登录备选) - 深色玻璃态 */
+    /* 强制覆盖所有普通按钮，防止变成白色 */
+    button[kind="secondary"], div.stButton > button:not([kind="primary"]) {
+        background: rgba(15, 23, 42, 0.6) !important;
+        border: 1px solid rgba(148, 163, 184, 0.3) !important;
+        color: #e2e8f0 !important; /* 灰白文字 */
+        font-weight: 600 !important;
+        transition: all 0.3s;
+    }
+    
+    /* 悬停效果 */
+    button:hover {
+        transform: scale(1.03);
+        border-color: #22d3ee !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 20px rgba(34, 211, 238, 0.5) !important;
+    }
+
+    /* 4. 卡片与容器：加深背景色，提高文字对比度 */
     div[data-testid="stMetric"], div.stInfo, div.stWarning, div.stError, div.stSuccess, .login-box {
-        background: rgba(2, 6, 23, 0.85) !important; /* 85% 不透明度的深黑背景 */
+        background: rgba(2, 6, 23, 0.9) !important; 
         backdrop-filter: blur(15px);
-        border: 1px solid rgba(148, 163, 184, 0.2); /* 边框调亮 */
-        box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-        color: #ffffff !important; /* 强制纯白文字 */
+        border: 1px solid rgba(148, 163, 184, 0.2); 
         border-radius: 16px;
         z-index: 2;
         position: relative;
     }
     
-    /* 缅甸语防爆适配 */
-    div[data-testid="stNotification"], p, div {
-        word-wrap: break-word;
-    }
-
-    /* 4. 按钮样式增强 */
-    div.stButton > button {
-        border: none;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-        transition: all 0.3s;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-    }
-    div.stButton > button:hover {
-        transform: scale(1.03);
-        box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
+    /* 5. 文字增强 (解决看不清) */
+    p, span, div {
+        text-shadow: 0 1px 2px rgba(0,0,0,0.8); /* 黑色投影衬托白字 */
     }
     
-    /* 谷歌按钮白底适配 */
-    button:has(div:contains("Google")) {
-        border: 1px solid #e2e8f0 !important;
-    }
+    div[data-testid="stNotification"] { word-wrap: break-word; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -163,8 +160,8 @@ TRANS = {
         "login_title": "Sign in to OriginGuard",
         "login_email": "Enter Access Code / Password",
         "login_btn": "Sign In",
-        "login_error": "⚠️ Invalid Access Code. Please contact admin.",
-        "login_or": "OR CONTINUE WITH",
+        "login_error": "⚠️ Invalid Access Code.",
+        "login_or": "OR CONNECT WITH",
         "ph_email": "e.g. origin2026",
     },
     "中文": {
@@ -180,8 +177,8 @@ TRANS = {
         "login_title": "登录 OriginGuard",
         "login_email": "输入访问密钥 / 密码",
         "login_btn": "登录",
-        "login_error": "⚠️ 密钥错误。请联系管理员获取。",
-        "login_or": "或通过以下方式继续",
+        "login_error": "⚠️ 密钥错误。",
+        "login_or": "或连接账户",
         "ph_email": "例如：origin2026",
     },
     "Myanmar": {
@@ -224,6 +221,7 @@ def render_footer():
     labels = T['titles']
     keys = ["tos", "refund", "privacy", "sla", "disclaimer"]
     for i, col in enumerate(cols):
+        # 使用普通的 secondary button，但 CSS 已经强制将其改为深色玻璃态
         if col.button(labels[i], key=f"btn_{keys[i]}", use_container_width=True):
             st.session_state.view_legal = keys[i]
             set_page('legal_view')
@@ -234,11 +232,10 @@ def render_footer():
 if st.session_state.page == 'landing':
     st.write("")
     
-    # 使用 floating-text class 让字幕动起来
     st.markdown(f"""
     <div style="text-align: center; padding: 80px 0; position:relative; z-index:1;">
         <h1 style="font-size: 64px; margin-bottom: 20px;">{T['slogan']}</h1>
-        <p class="floating-text" style="font-size: 24px; max-width: 800px; margin: 0 auto; font-weight: 600;">
+        <p style="font-size: 24px; max-width: 800px; margin: 0 auto; font-weight: 600; color: #e2e8f0;">
             {T['sub_slogan']}
         </p>
     </div>
@@ -249,7 +246,8 @@ if st.session_state.page == 'landing':
 
     c1, c2, c3 = st.columns([1, 1, 1])
     with c2:
-        if st.button(T['btn_launch'], use_container_width=True):
+        # 使用 primary 样式 (渐变色)
+        if st.button(T['btn_launch'], use_container_width=True, type="primary"):
             set_page('login') 
             st.rerun()
     
@@ -272,6 +270,7 @@ elif st.session_state.page == 'login':
         # 密码输入
         password_input = st.text_input(T['login_email'], type="password", placeholder=T['ph_email'])
         
+        # 登录按钮：使用 Primary 样式
         if st.button(T['login_btn'], use_container_width=True, type="primary"):
             if password_input == "origin2026":
                 with st.spinner("Verifying Credentials..."):
@@ -284,16 +283,16 @@ elif st.session_state.page == 'login':
 
         st.markdown(f"<div style='text-align: center; color: #cbd5e1; margin: 20px 0; font-size:12px;'>{T['login_or']}</div>", unsafe_allow_html=True)
         
-        # 模拟 OAuth 按钮
+        # 社交登录：使用 Secondary 样式 (深色玻璃)
         col_g, col_a, col_gh = st.columns(3)
         with col_g:
-            if st.button("Google", use_container_width=True):
-                st.warning("⚠️ API Configuration Required (Production)")
+            if st.button("🇬 Google", use_container_width=True):
+                st.warning("⚠️ API Configuration Required")
         with col_a:
-            if st.button("Apple", use_container_width=True):
+            if st.button("🍎 Apple", use_container_width=True):
                  st.warning("⚠️ API Configuration Required")
         with col_gh:
-            if st.button("GitHub", use_container_width=True):
+            if st.button("🐙 GitHub", use_container_width=True):
                  st.warning("⚠️ API Configuration Required")
             
         st.write("")
@@ -330,12 +329,12 @@ elif st.session_state.page == 'dashboard':
     
     with tab1:
         st.file_uploader("JPG/PNG", type=['png', 'jpg'])
-        st.button("🔒 Encrypt")
+        st.button("🔒 Encrypt", type="primary") # 重要操作用亮色
     with tab2:
         st.map(pd.DataFrame({'lat': [13.7563], 'lon': [100.5018]}))
     with tab3:
         st.text_input("Infringing URL")
-        st.button("🚀 Strike")
+        st.button("🚀 Strike", type="primary")
     
     render_footer()
 

@@ -17,6 +17,7 @@ st.set_page_config(
 # ==========================================
 # 2. 法律文本常量库 (IMMUTABLE LEGAL TEXTS)
 # ==========================================
+# 严禁修改合同内容
 LEGAL_CONSTANTS = {
     "English": {
         "tos": """**1. Acceptance of Terms:** By accessing OriginGuard, you agree to be bound by these Terms. If you do not agree, do not use our services.\n\n**2. Authorized Use:** You affirm that you are the lawful copyright owner of any content you upload. Uploading stolen, illegal, or unauthorized content will result in immediate account termination and reporting to authorities.\n\n**3. Limitation of Liability:** OriginGuard is a technology provider. We provide blockchain evidence but do not guarantee specific legal outcomes in any jurisdiction.""",
@@ -42,23 +43,25 @@ LEGAL_CONSTANTS = {
 }
 
 # ==========================================
-# 3. 动态 CSS (V3.8 数字星尘特效 + 真实图标)
+# 3. 动态 CSS (V3.9 晶透高亮版)
 # ==========================================
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Padauk:wght@400;700&family=Noto+Sans+Myanmar:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&family=Padauk:wght@400;700&family=Noto+Sans+Myanmar:wght@400;700&display=swap');
 
-    /* 1. 背景动画：深海渐变 + 粒子下落 (Cyber-Snow) */
+    /* 1. 背景动画：深海渐变 + 粒子下落 */
     @keyframes move-background {
         from {transform: translate3d(0px, 0px, 0px);}
-        to {transform: translate3d(0px, 1000px, 0px);} /* 向下飘落 */
+        to {transform: translate3d(0px, 1000px, 0px);}
     }
     .stApp {
-        background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #020617 100%);
-        color: #e2e8f0;
+        background: radial-gradient(circle at 50% 50%, #0f172a 0%, #020617 100%);
+        /* 全局字体颜色改为极亮白，解决“看不清”问题 */
+        color: #f8fafc !important; 
         font-family: 'Inter', 'Padauk', 'Noto Sans Myanmar', sans-serif !important;
     }
-    /* 创建星尘粒子效果 */
+    
+    /* 星尘粒子层 */
     .stApp::before {
         content: "";
         position: absolute;
@@ -67,74 +70,79 @@ st.markdown("""
         width: 100%;
         height: 300%;
         background-image: 
-            radial-gradient(2px 2px at 100px 50px, #60a5fa, transparent),
-            radial-gradient(2px 2px at 200px 150px, #818cf8, transparent),
-            radial-gradient(2px 2px at 300px 450px, #22d3ee, transparent),
-            radial-gradient(2px 2px at 400px 300px, #ffffff, transparent),
-            radial-gradient(2px 2px at 600px 100px, #60a5fa, transparent),
-            radial-gradient(2px 2px at 800px 250px, #818cf8, transparent);
+            radial-gradient(2px 2px at 100px 50px, #22d3ee, transparent),
+            radial-gradient(2px 2px at 300px 450px, #818cf8, transparent),
+            radial-gradient(1.5px 1.5px at 600px 100px, #ffffff, transparent);
         background-size: 1000px 1000px;
         animation: move-background 40s linear infinite;
-        opacity: 0.3;
+        opacity: 0.4;
         z-index: 0;
         pointer-events: none;
     }
 
-    /* 2. 标题流光 */
-    h1, h2, h3 {
-        background: linear-gradient(90deg, #22d3ee, #818cf8, #c084fc);
+    /* 2. 标题流光 + 字幕浮动 (New Feature) */
+    h1 {
+        background: linear-gradient(90deg, #22d3ee, #a78bfa, #c084fc);
         background-size: 200% auto;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         font-weight: 900 !important;
         letter-spacing: -1px;
-        z-index: 1;
-        position: relative;
+        animation: gradientText 4s linear infinite;
+        text-shadow: 0 0 20px rgba(34, 211, 238, 0.3); /* 增加发光，提高清晰度 */
+    }
+    
+    /* 悬浮动画：用于副标题和说明文字 */
+    @keyframes float-text {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-8px); }
+        100% { transform: translateY(0px); }
+    }
+    .floating-text {
+        animation: float-text 6s ease-in-out infinite;
+        color: #e2e8f0; /* 亮灰白 */
+        text-shadow: 0 2px 4px rgba(0,0,0,0.8); /* 黑色阴影衬托文字 */
     }
 
-    /* 3. 登录框 (真实感) */
-    .login-box {
-        background: rgba(15, 23, 42, 0.85); /* 加深背景，突出内容 */
-        backdrop-filter: blur(25px);
-        border: 1px solid rgba(255,255,255,0.1);
-        padding: 40px;
-        border-radius: 20px;
-        box-shadow: 0 0 40px rgba(0,0,0,0.6);
+    @keyframes gradientText {
+        0% {background-position: 0% center;}
+        100% {background-position: 200% center;}
+    }
+
+    /* 3. 卡片与容器：加深背景色，提高文字对比度 */
+    div[data-testid="stMetric"], div.stInfo, div.stWarning, div.stError, div.stSuccess, .login-box {
+        background: rgba(2, 6, 23, 0.85) !important; /* 85% 不透明度的深黑背景 */
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(148, 163, 184, 0.2); /* 边框调亮 */
+        box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+        color: #ffffff !important; /* 强制纯白文字 */
+        border-radius: 16px;
         z-index: 2;
         position: relative;
     }
+    
+    /* 缅甸语防爆适配 */
+    div[data-testid="stNotification"], p, div {
+        word-wrap: break-word;
+    }
 
-    /* 4. 真实 SVG 图标按钮优化 */
-    .auth-btn-google {
-        background: white !important;
-        color: #3c4043 !important;
-        border: 1px solid #dadce0 !important;
-    }
-    .auth-btn-apple {
-        background: black !important;
-        color: white !important;
-        border: 1px solid #333 !important;
-    }
-    .auth-btn-github {
-        background: #24292e !important;
-        color: white !important;
-        border: 1px solid #333 !important;
-    }
-    /* Streamlit 按钮通用覆盖 */
+    /* 4. 按钮样式增强 */
     div.stButton > button {
-        border-radius: 8px;
-        font-weight: 600;
         border: none;
-        transition: transform 0.2s;
-        z-index: 2;
-        position: relative;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
     }
     div.stButton > button:hover {
         transform: scale(1.03);
+        box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
     }
     
-    /* 5. 底部适配 */
-    div[data-testid="stNotification"] { word-wrap: break-word; z-index: 2; position: relative; }
+    /* 谷歌按钮白底适配 */
+    button:has(div:contains("Google")) {
+        border: 1px solid #e2e8f0 !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -196,21 +204,16 @@ TRANS = {
 }
 
 # ==========================================
-# 5. 逻辑控制 (Auth & Session)
+# 5. 逻辑控制
 # ==========================================
 lang_choice = st.sidebar.selectbox("🌐 Language / 语言", ["English", "中文", "Myanmar"], index=1)
 T = TRANS[lang_choice]
 L_TEXT = LEGAL_CONSTANTS[lang_choice]
 
 if 'page' not in st.session_state: st.session_state.page = 'landing'
-if 'auth' not in st.session_state: st.session_state.auth = False # 初始未登录
+if 'auth' not in st.session_state: st.session_state.auth = False 
 
 def set_page(name): st.session_state.page = name
-
-# --- 真实图标 SVG 代码 (Authentic Icons) ---
-ICON_GOOGLE = """<svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.63-.06-1.25-.17-1.84H9v3.49h4.84c-.21 1.12-.85 2.07-1.8 2.71v2.24h2.91c1.7-1.56 2.68-3.87 2.68-6.6z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.24c-.81.54-1.84.86-3.05.86-2.34 0-4.32-1.58-5.03-3.71H.99v2.33C2.47 15.93 5.48 18 9 18z"/><path fill="#FBBC05" d="M3.97 10.73c-.18-.54-.28-1.12-.28-1.73s.1-1.19.28-1.73V4.94H.99c-.62 1.24-.98 2.63-.98 4.06s.36 2.82.98 4.06l2.98-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.59C13.47.89 11.43 0 9 0 5.48 0 2.47 2.07.99 4.94l2.98 2.33c.71-2.13 2.69-3.71 5.03-3.71z"/></svg>"""
-ICON_APPLE = """<svg width="18" height="18" viewBox="0 0 384 512" style="fill:white"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 52.3-11.4 69.5-34.3z"/></svg>"""
-ICON_GITHUB = """<svg width="18" height="18" viewBox="0 0 1024 1024" style="fill:white"><path d="M511.6 76.3C264.3 76.2 64 276.4 64 523.5 64 718.9 189.3 885 363.8 946c23.5 5.9 19.9-10.8 19.9-22.2v-77.5c-135.7 15.9-141.2-73.9-150.3-88.9C215 726 171.5 718 184.5 703c30.9-15.9 62.4 4 98.9 57.9 26.4 39.1 77.9 32.5 104 26 5.7-23.5 17.9-44.5 34.7-60.8-140.6-25.2-199.2-111-199.2-213 0-49.5 16.3-95 48.3-131.7-20.4-60.5 1.9-112.3 4.9-120 58.1-5.2 118.5 41.6 123.2 45.3 33-8.9 70.7-13.6 112.9-13.6 42.4 0 80.2 4.9 113.5 13.9 11.3-8.6 67.3-48.8 121.3-43.9 2.9 7.7 24.7 58.3 5.5 118 32.4 36.8 48.9 82.7 48.9 132.3 0 102.2-59 188.1-200 212.9a127.5 127.5 0 0 1 38.1 91v112.5c.8 9 0 17.9 15 17.9 177.1-59.7 304.6-227 304.6-424.1 0-247.2-200.4-447.3-447.5-447.3z"/></svg>"""
 
 # --- 公共底部组件 ---
 def render_footer():
@@ -225,20 +228,24 @@ def render_footer():
             st.session_state.view_legal = keys[i]
             set_page('legal_view')
             st.rerun()
-    st.markdown(f"<div style='text-align: center; color: #64748b; font-size: 12px; margin-top: 20px; position:relative; z-index:2;'>{T['footer_copy']}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='text-align: center; color: #94a3b8; font-size: 12px; margin-top: 20px; position:relative; z-index:2;'>{T['footer_copy']}</div>", unsafe_allow_html=True)
 
 # --- 1. 官网首页 (Landing) ---
 if st.session_state.page == 'landing':
     st.write("")
+    
+    # 使用 floating-text class 让字幕动起来
     st.markdown(f"""
     <div style="text-align: center; padding: 80px 0; position:relative; z-index:1;">
         <h1 style="font-size: 64px; margin-bottom: 20px;">{T['slogan']}</h1>
-        <p style="font-size: 24px; color: #cbd5e1; max-width: 800px; margin: 0 auto;">{T['sub_slogan']}</p>
+        <p class="floating-text" style="font-size: 24px; max-width: 800px; margin: 0 auto; font-weight: 600;">
+            {T['sub_slogan']}
+        </p>
     </div>
     """, unsafe_allow_html=True)
     
     block_num = random.randint(245000000, 245999999)
-    st.markdown(f"<div style='text-align: center; margin-bottom: 40px; color:#4ade80; position:relative; z-index:1;'>{T['live_status']}{block_num}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='text-align: center; margin-bottom: 40px; color:#22d3ee; font-weight:bold; position:relative; z-index:1;'>{T['live_status']}{block_num}</div>", unsafe_allow_html=True)
 
     c1, c2, c3 = st.columns([1, 1, 1])
     with c2:
@@ -258,75 +265,55 @@ elif st.session_state.page == 'login':
         st.markdown(f"""
         <div class="login-box">
             <h2 style="margin-bottom: 10px;">{T['login_title']}</h2>
-            <hr style="border-color:rgba(255,255,255,0.1); margin: 20px 0;">
+            <hr style="border-color:rgba(255,255,255,0.2); margin: 20px 0;">
         </div>
         """, unsafe_allow_html=True)
         
-        # 2.1 真实密码验证
+        # 密码输入
         password_input = st.text_input(T['login_email'], type="password", placeholder=T['ph_email'])
         
         if st.button(T['login_btn'], use_container_width=True, type="primary"):
-            # 🔐 核心安全逻辑：只有密码正确才能进
             if password_input == "origin2026":
-                with st.spinner("Verifying Credentials on Chain..."):
+                with st.spinner("Verifying Credentials..."):
                     time.sleep(1.0)
-                st.session_state.auth = True # 标记为已授权
+                st.session_state.auth = True 
                 set_page('dashboard')
                 st.rerun()
             else:
                 st.error(T['login_error'])
 
-        st.markdown(f"<div style='text-align: center; color: #64748b; margin: 20px 0; font-size:12px;'>{T['login_or']}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='text-align: center; color: #cbd5e1; margin: 20px 0; font-size:12px;'>{T['login_or']}</div>", unsafe_allow_html=True)
         
-        # 2.2 真实图标按钮 (Google/Apple/Github)
-        # 注意：这些按钮目前模拟 UI，点击会提示需要 API Key (这是真实情况)
+        # 模拟 OAuth 按钮
         col_g, col_a, col_gh = st.columns(3)
         with col_g:
             if st.button("Google", use_container_width=True):
-                st.warning("⚠️ API Key Required (Admin Only)")
+                st.warning("⚠️ API Configuration Required (Production)")
         with col_a:
             if st.button("Apple", use_container_width=True):
-                 st.warning("⚠️ API Key Required")
+                 st.warning("⚠️ API Configuration Required")
         with col_gh:
             if st.button("GitHub", use_container_width=True):
-                 st.warning("⚠️ API Key Required")
+                 st.warning("⚠️ API Configuration Required")
             
         st.write("")
         if st.button(T['back'], use_container_width=True):
             set_page('landing')
             st.rerun()
-            
-        # JS 注入 SVG 图标 (为了覆盖 Streamlit 默认按钮文字)
-        # 这是一个高级技巧，用 JS 替换按钮文本为 SVG 图标
-        st.markdown(f"""
-        <script>
-            // 简单延时替换，确保按钮渲染完成
-            setTimeout(function() {{
-                var btns = window.parent.document.querySelectorAll('button');
-                // 遍历查找并替换内容 (根据按钮顺序)
-                // 这里我们不做复杂的 DOM 操作防止不稳定，图标主要靠布局
-            }}, 1000);
-        </script>
-        <style>
-            /* 辅助样式，让上面三个按钮显示图标背景 (Hack) */
-            /* 这种 Hack 在 Streamlit 不稳定，因此我采用了上面 st.button 文字 + CSS 样式的方法 */
-        </style>
-        """, unsafe_allow_html=True)
 
     render_footer()
 
 # --- 3. 控制台 (Dashboard - Secure) ---
 elif st.session_state.page == 'dashboard':
-    # 安全检查：如果没登录，踢回首页
     if not st.session_state.auth:
         set_page('login')
         st.rerun()
 
     with st.sidebar:
-        st.write("👤 **CEO: MNNO**") # 现在登录了，可以显示 CEO
+        st.write("👤 **CEO: MNNO**")
         st.success("🟢 Authenticated")
         if st.button(T['back']): 
-            st.session_state.auth = False # 退出登录
+            st.session_state.auth = False
             set_page('landing')
             st.rerun()
 
@@ -359,7 +346,7 @@ elif st.session_state.page == 'legal_view':
     view_key = st.session_state.get('view_legal', 'tos')
     content = L_TEXT.get(view_key, "Content not found.")
     st.markdown(f"""
-    <div style="background: rgba(15, 23, 42, 0.6); padding: 40px; border-radius: 12px; border: 1px solid #334155; position:relative; z-index:1;">
+    <div style="background: rgba(2, 6, 23, 0.9); padding: 40px; border-radius: 12px; border: 1px solid #334155; position:relative; z-index:1; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
         {content}
     </div>
     """, unsafe_allow_html=True)

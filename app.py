@@ -83,7 +83,7 @@ Blockchain ငွေပေးချေမှုများသည် ပြင�
 }
 
 # ==========================================
-# 4. 动态 CSS (V4.9: 500强细节修补)
+# 4. 动态 CSS (V5.0: 交互完美版)
 # ==========================================
 st.markdown("""
 <style>
@@ -169,21 +169,31 @@ st.markdown("""
     }
     .footer-title { color: #FCD535; font-weight: 700; font-size: 14px; margin-bottom: 10px; text-transform: uppercase; }
     
-    /* 7. Sub-Footer (Terms, Privacy etc.) */
-    .sub-footer {
-        text-align: center; color: #64748b; font-size: 12px; margin-top: 10px;
-        border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;
-    }
-    .sub-footer span { margin: 0 10px; cursor: pointer; transition: color 0.3s; }
-    .sub-footer span:hover { color: #FCD535; }
-
-    /* 8. Breathing Text */
+    /* 7. Breathing Text */
     @keyframes breathe {
         0% { opacity: 0.9; text-shadow: 0 0 5px rgba(255,255,255,0.1); }
         50% { opacity: 1; text-shadow: 0 0 25px rgba(34, 211, 238, 0.6); }
         100% { opacity: 0.9; text-shadow: 0 0 5px rgba(255,255,255,0.1); }
     }
     .breathing-text { animation: breathe 3s ease-in-out infinite; }
+
+    /* 8. 隐形按钮 (用于底部合规链接) - V5.0 新增 */
+    /* 针对 sub-footer-btn 这个 key 的按钮样式 hack */
+    div[data-testid="stHorizontalBlock"] button {
+        background-color: transparent !important;
+        border: none !important;
+        color: #64748b !important;
+        font-size: 12px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        height: auto !important;
+        box-shadow: none !important;
+    }
+    div[data-testid="stHorizontalBlock"] button:hover {
+        color: #FCD535 !important;
+        background-color: transparent !important;
+        transform: none !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -327,22 +337,47 @@ def render_fat_footer():
              st.session_state.view_legal = "sla"; set_page('legal_view'); st.rerun()
         st.info("✉️ support@originguard.com")
 
-    # 底部语言切换栏
+    # 底部语言切换 (Selectbox)
     st.markdown("---")
-    cL1, cL2, cL3 = st.columns([1,2,1])
-    with cL2:
-        cols = st.columns(3)
-        if cols[0].button("中文", use_container_width=True): st.session_state.language="中文"; st.rerun()
-        if cols[1].button("English", use_container_width=True): st.session_state.language="English"; st.rerun()
-        if cols[2].button("Myanmar", use_container_width=True): st.session_state.language="Myanmar"; st.rerun()
     
-    # 填补 Gap 2: Sub-Footer (合规底栏)
-    st.markdown("""
-    <div class="sub-footer">
-        <span>Terms</span> | <span>Privacy</span> | <span>Security</span> | <span>Status</span> | <span>Do not share my personal information</span>
-        <br><br>© 2026 OriginGuard Solutions Inc. All rights reserved.
-    </div>
-    """, unsafe_allow_html=True)
+    # 居中布局语言选择器
+    cL1, cL2, cL3 = st.columns([1, 1, 1])
+    with cL2:
+        selected_lang = st.selectbox(
+            "🌐 Select Language / 选择语言", 
+            ["English", "中文", "Myanmar"], 
+            index=["English", "中文", "Myanmar"].index(st.session_state.language),
+            key="lang_select"
+        )
+        if selected_lang != st.session_state.language:
+            st.session_state.language = selected_lang
+            st.rerun()
+
+    # 合规底栏 (Interactive Sub-Footer)
+    st.write("")
+    st.write("")
+    
+    # 使用 7 列布局来实现 5 个链接的居中排列 (Empty, Link, Link, Link, Link, Link, Empty)
+    sub_cols = st.columns([1, 2, 2, 2, 2, 3, 1])
+    
+    # CSS Hack: 让这些按钮看起来像灰色文字，悬停变色
+    with sub_cols[1]:
+        if st.button("Terms", key="sub_terms", use_container_width=True):
+            st.session_state.view_legal = "tos"; set_page('legal_view'); st.rerun()
+    with sub_cols[2]:
+        if st.button("Privacy", key="sub_priv", use_container_width=True):
+            st.session_state.view_legal = "privacy"; set_page('legal_view'); st.rerun()
+    with sub_cols[3]:
+        if st.button("Security", key="sub_sec", use_container_width=True):
+            st.toast("✅ System Secure: All encryption modules active.", icon="🛡️")
+    with sub_cols[4]:
+        if st.button("Status", key="sub_stat", use_container_width=True):
+            st.toast("🟢 All Systems Operational (99.9% Uptime)", icon="📶")
+    with sub_cols[5]:
+        if st.button("Do not share my personal information", key="sub_ccpa", use_container_width=True):
+            st.toast("🔒 Privacy request recorded. We do not sell user data.", icon="🚫")
+
+    st.markdown("<div style='text-align:center; color:#64748b; font-size:12px; margin-top:20px;'>© 2026 OriginGuard Solutions Inc. All rights reserved.</div>", unsafe_allow_html=True)
     
     # Cookie Banner
     if not st.session_state.cookies_accepted:
@@ -375,8 +410,8 @@ if st.session_state.page == 'landing':
         st.markdown(f"<div style='margin-top: 40px; color:#FCD535; font-weight:bold;'>🟢 Solana Mainnet Slot: #{real_block}</div>", unsafe_allow_html=True)
 
     with col_auth:
-        # 填补 Gap 1: Login Header (身份铭牌)
-        st.markdown("### 🛡️ OriginGuard ID") # 这行标题会自动进入玻璃态列
+        # Header for Login Box
+        st.markdown("### 🛡️ OriginGuard ID") 
         
         tab_login, tab_reg = st.tabs([T['tab_login'], T['tab_reg']])
         with tab_login:

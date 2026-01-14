@@ -82,7 +82,7 @@ OriginGuard 是一家技术提供商，而**非律师事务所**。"""
 }
 
 # ==========================================
-# 4. 动态 CSS (V5.7: 终端光标激活)
+# 4. 动态 CSS (V5.8: 全域动态 + 清晰修正)
 # ==========================================
 st.markdown("""
 <style>
@@ -120,149 +120,169 @@ st.markdown("""
         z-index: 0; pointer-events: none; opacity: 0.8;
     }
 
+    /* ------------------- 动画库 (Animation Library) ------------------- */
     @keyframes neon-pulse {
         0% { box-shadow: 0 0 5px rgba(15, 255, 0, 0.2); border-color: rgba(15, 255, 0, 0.3); }
         50% { box-shadow: 0 0 15px rgba(15, 255, 0, 0.5); border-color: rgba(15, 255, 0, 0.8); }
         100% { box-shadow: 0 0 5px rgba(15, 255, 0, 0.2); border-color: rgba(15, 255, 0, 0.3); }
     }
-
-    /* Auth Header Animation (V5.7 New Feature) */
-    @keyframes blink-cursor { 50% { border-color: transparent; } }
-    @keyframes text-glitch {
-        0% { text-shadow: 2px 0 var(--neon-yellow), -2px 0 #f00; }
-        25% { text-shadow: -2px 0 var(--neon-yellow), 2px 0 #f00; }
-        50% { text-shadow: 2px 0 #f00, -2px 0 var(--neon-yellow); }
-        75% { text-shadow: -2px 0 #f00, 2px 0 var(--neon-yellow); }
-        100% { text-shadow: 2px 0 var(--neon-yellow), -2px 0 #f00; }
+    
+    @keyframes text-glow {
+        0% { text-shadow: 0 0 5px rgba(15, 255, 0, 0.3); color: #fff; }
+        50% { text-shadow: 0 0 20px rgba(15, 255, 0, 0.8), 0 0 10px var(--neon-yellow); color: var(--neon-green); }
+        100% { text-shadow: 0 0 5px rgba(15, 255, 0, 0.3); color: #fff; }
     }
+
+    @keyframes glitch-text {
+        0% { transform: translate(0); }
+        20% { transform: translate(-2px, 2px); }
+        40% { transform: translate(-2px, -2px); }
+        60% { transform: translate(2px, 2px); }
+        80% { transform: translate(2px, -2px); }
+        100% { transform: translate(0); }
+    }
+
+    /* 应用动态效果 */
+    .breathing-text { animation: text-glow 3s ease-in-out infinite alternate; font-weight: 900; }
+    .glitch-text { animation: glitch-text 3s infinite linear alternate-reverse; color: var(--neon-yellow) !important; text-shadow: 2px 2px 0px #ff0000; }
+    .footer-title, .legal-box h3, .feature-card h3 { animation: text-glow 5s ease-in-out infinite; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* ------------------- 组件样式 (Components) ------------------- */
+    
+    /* Login Box */
+    div[data-testid="column"]:nth-of-type(2) > div[data-testid="stVerticalBlock"] {
+        background: rgba(10, 10, 15, 0.95) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--neon-green);
+        padding: 30px;
+        border-radius: 4px;
+        box-shadow: 0 0 20px rgba(15, 255, 0, 0.1);
+    }
+
+    /* Auth Header (Live Terminal) */
+    @keyframes blink-cursor { 50% { border-color: transparent; } }
     .auth-header {
         font-family: 'JetBrains Mono', monospace;
         color: var(--neon-green);
         font-weight: 900;
         font-size: 24px;
         text-transform: uppercase;
-        border-right: 0.6em solid var(--neon-green); /* The Cursor */
+        border-right: 0.6em solid var(--neon-green);
         width: fit-content;
         margin-bottom: 20px;
-        animation: blink-cursor 1s step-end infinite; /* Cursor Blink */
-        text-shadow: 0 0 5px var(--neon-green);
-    }
-    .auth-header:hover {
-        animation: blink-cursor 1s step-end infinite, text-glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+        animation: blink-cursor 1s step-end infinite;
+        text-shadow: 0 0 10px var(--neon-green);
     }
 
-    /* Containers */
-    div[data-testid="column"]:nth-of-type(2) > div[data-testid="stVerticalBlock"],
+    /* Cards */
     .legal-box, .feature-card, .cert-box, .wallet-box, .kyc-box {
-        background: rgba(10, 10, 15, 0.9) !important;
-        backdrop-filter: blur(10px);
+        background: #000000 !important;
         border: 1px solid var(--neon-green);
         padding: 25px;
-        border-radius: 4px;
-        animation: neon-pulse 4s infinite ease-in-out;
         color: #ffffff !important;
-        z-index: 2; position: relative;
+        box-shadow: 5px 5px 0px rgba(15, 255, 0, 0.2);
+        margin-bottom: 20px;
+        transition: transform 0.2s;
     }
-    
-    .legal-box h3, .feature-card h3 { color: var(--neon-yellow) !important; text-transform: uppercase; letter-spacing: 1px; }
-    .cert-box { border-color: var(--neon-yellow); animation-name: none; }
-    .cert-title { color: var(--neon-yellow); font-weight: 900; }
-    .cert-hash { font-family: 'JetBrains Mono', monospace; color: var(--neon-green); font-weight: bold; }
-
-    /* Wallet */
-    .wallet-box { border-left: 4px solid var(--neon-green); }
-    .wallet-status-on { color: var(--neon-green); font-weight: 900; }
-    .wallet-status-off { color: #64748b; }
-    
-    /* KYC Badges */
-    .kyc-badge-verified { color: var(--neon-green); border: 1px solid var(--neon-green); padding: 2px 10px; font-weight: bold; }
-    .kyc-badge-pending { color: var(--neon-yellow); border: 1px solid var(--neon-yellow); padding: 2px 10px; font-weight: bold; }
+    .feature-card:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0px var(--neon-yellow); border-color: var(--neon-yellow); }
 
     /* Buttons */
-    @keyframes glitch-pulse {
-        0% { transform: skewX(0deg); }
-        20% { transform: skewX(-2deg); }
-        40% { transform: skewX(2deg); }
-        60% { transform: skewX(-1deg); }
-        80% { transform: skewX(1deg); }
-        100% { transform: skewX(0deg); }
-    }
     button[kind="primary"] {
         background: var(--neon-yellow) !important;
         color: #000 !important; border: 2px solid var(--neon-yellow) !important; font-weight: 900 !important;
-        border-radius: 0px !important; text-transform: uppercase; transition: all 0.2s;
-        box-shadow: 5px 5px 0px var(--neon-green);
+        border-radius: 0px !important; text-transform: uppercase;
+        box-shadow: 4px 4px 0px var(--neon-green);
     }
-    button[kind="primary"]:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0px var(--neon-green); animation: glitch-pulse 0.5s linear; }
-    div.stButton > button:not([kind="primary"]) { background-color: transparent !important; color: var(--neon-green) !important; border: 1px solid var(--neon-green) !important; border-radius: 0px; font-family: monospace; }
-    div.stButton > button:not([kind="primary"]):hover { background-color: var(--neon-green) !important; color: #000 !important; }
+    button[kind="primary"]:hover { transform: translate(-1px, -1px); box-shadow: 6px 6px 0px #fff; }
+    
+    div.stButton > button:not([kind="primary"]) {
+        background-color: transparent !important; color: var(--neon-green) !important;
+        border: 1px solid var(--neon-green) !important; border-radius: 0px; font-family: monospace;
+    }
+    div.stButton > button:not([kind="primary"]):hover {
+        background-color: var(--neon-green) !important; color: #000 !important;
+    }
 
-    /* Real Logos */
-    .real-logo-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 10px; border-radius: 0px; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-bottom: 10px; text-decoration: none !important; font-family: monospace; border: 1px solid #333;}
-    .real-logo-btn:hover { background: #fff; color: #000; }
-    .btn-google, .btn-apple, .btn-github { background: transparent; color: #fff; }
-
-    /* Footer */
-    .cookie-banner { background: #000; border-top: 2px solid var(--neon-green); }
-    .footer-title { color: var(--neon-green); font-weight: 900; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid var(--neon-green); display: inline-block; margin-bottom: 15px;}
-    div[data-testid="stHorizontalBlock"] button { color: #64748b !important; font-family: 'JetBrains Mono', monospace !important; font-weight: 600; }
-    div[data-testid="stHorizontalBlock"] button:hover { color: var(--neon-green) !important; text-shadow: 0 0 5px var(--neon-green); }
-
-    /* Fix Selectbox Visibility (V5.6 Standard) */
+    /* ------------------- 修复：下拉菜单 (High Contrast) ------------------- */
     div[data-baseweb="select"] > div {
-        background-color: rgba(2, 6, 23, 0.9) !important;
-        color: #ffffff !important;
-        border: 2px solid var(--neon-yellow) !important; /* High Contrast Border */
+        background-color: #000000 !important; /* 纯黑背景 */
+        color: #ffffff !important; /* 纯白文字 */
+        border: 2px solid #FCD535 !important; /* 币安黄边框 */
         font-weight: 700 !important;
-        backdrop-filter: none !important;
+        border-radius: 0px !important;
+        opacity: 1 !important;
     }
-    div[data-baseweb="popover"] { background-color: #0f172a !important; border: 2px solid var(--neon-yellow); }
-    div[data-baseweb="menu"] div { color: #ffffff !important; }
-    div[data-baseweb="menu"] div:hover { background-color: var(--neon-yellow) !important; color: #000 !important; }
-    div[data-baseweb="select"] span { color: #ffffff !important; }
+    /* 下拉选项容器 */
+    div[data-baseweb="popover"], div[data-baseweb="menu"] {
+        background-color: #000000 !important;
+        border: 1px solid #FCD535 !important;
+    }
+    /* 选项文字 */
+    div[data-baseweb="menu"] li {
+        color: #ffffff !important;
+    }
+    /* 选中/悬停项 */
+    div[data-baseweb="menu"] li[aria-selected="true"], div[data-baseweb="menu"] li:hover {
+        background-color: #FCD535 !important;
+        color: #000000 !important;
+    }
+    /* 选中的值显示 */
+    div[data-baseweb="select"] span {
+        color: #ffffff !important;
+    }
+    /* 下拉箭头 */
+    div[data-baseweb="select"] svg {
+        fill: #FCD535 !important;
+        color: #FCD535 !important;
+    }
+
+    /* Footer & Invisible Buttons */
+    .footer-title { border-bottom: 2px solid var(--neon-green); padding-bottom: 5px; margin-bottom: 15px; display: inline-block;}
+    div[data-testid="stHorizontalBlock"] button { color: #64748b !important; font-family: 'JetBrains Mono', monospace !important; font-weight: 600; }
+    div[data-testid="stHorizontalBlock"] button:hover { color: var(--neon-yellow) !important; text-shadow: 0 0 10px var(--neon-yellow); }
+    
+    .real-logo-btn {border: 1px solid #333; color: #aaa;}
+    .real-logo-btn:hover {border-color: var(--neon-green); color: #fff;}
 </style>
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 5. 语言字典
+# 5. 语言字典 (Updated Slogan)
 # ==========================================
 TRANS = {
     "English": {
-        "slogan": "PROTECT YOUR ORIGINAL ASSETS",
+        "slogan": "PROTECT YOUR ORIGINAL VIDEOS & PHOTOS",
         "sub_slogan": "> The Global Standard for Web3 Copyright Defense. System Ready.",
-        "cookie_msg": "[SYSTEM] Strictly necessary cookies initialized. Proceeding implies consent.",
+        "cookie_msg": "[SYSTEM] Strictly necessary cookies initialized.",
         "cookie_btn": "ACKNOWLEDGE",
         "f_comm": "COMMUNITY_UPLINK", "f_legal": "LEGAL_PROTOCOLS", "f_prod": "PRODUCT_MATRIX", "f_serv": "SUPPORT_CHANNEL",
         "dev_msg": "⚠️ [DEV_MODE] Feature Under Construction.",
-        # Auth
         "tab_login": "ACCESS_TERMINAL", "tab_reg": "NEW_IDENTITY",
         "lbl_email": "ACCESS_KEY / EMAIL", "lbl_pwd": "PASSWORD", "lbl_cpwd": "CONFIRM_PASSWORD",
         "btn_login": "INITIALIZE_SESSION", "btn_reg": "DEPLOY_PROTECTION",
         "err_login": "❌ ACCESS DENIED. TRY 'origin2026'.",
         "suc_reg": "✅ IDENTITY CREATED. PLEASE LOG IN.",
         "or_connect": "--- OR ESTABLISH CONNECTION VIA ---",
-        # Features
-        "core_title": "CORE_DEFENSE_MATRIX_V5.5",
+        "core_title": "CORE_DEFENSE_MATRIX_V5.8",
         "c1_t": "INVISIBLE_DNA", "c1_d": "AI-embedded stealth watermarks immune to cropping algos.",
         "c2_t": "ON-CHAIN_TRUTH", "c2_d": "Immutable Solana transaction certificates finalized instantly.",
         "c3_t": "LEGAL_HAMMER_AI", "c3_d": "Millisecond generation of transnational DMCA takedown notices."
     },
     "中文": {
-        "slogan": "保护你的原创数字资产",
+        # ⚠️ 修正 Slogan
+        "slogan": "保护你的原创作品视频照片等",
         "sub_slogan": "> Web3 版权防御全球标准 | 系统已就绪",
         "cookie_msg": "[系统提示] 必要 Cookie 已初始化。继续操作即视为同意协议。",
         "cookie_btn": "确认并接入",
         "f_comm": "官方社区联络", "f_legal": "法律协议栈", "f_prod": "产品矩阵", "f_serv": "技术支持通道",
         "dev_msg": "⚠️ [开发模式] 功能正在构建中。",
-        # Auth
         "tab_login": "接入终端", "tab_reg": "创建新身份",
         "lbl_email": "访问密钥 / 邮箱", "lbl_pwd": "口令", "lbl_cpwd": "确认口令",
         "btn_login": "初始化会话", "btn_reg": "部署防御体系",
         "err_login": "❌ 访问被拒绝。尝试凭证 'origin2026'。",
         "suc_reg": "✅ 身份已创建。请接入终端。",
         "or_connect": "--- 或通过以下方式建立连接 ---",
-        # Features
-        "core_title": "核心防御矩阵_V5.5",
+        "core_title": "核心防御矩阵_V5.8",
         "c1_t": "隐形 DNA 技术", "c1_d": "AI 嵌入式隐形水印，免疫各类裁剪算法攻击。",
         "c2_t": "链上真理存证", "c2_d": "Solana 区块链永久存证交易，毫秒级确认。",
         "c3_t": "AI 法律重锤", "c3_d": "毫秒级生成跨国 DMCA 律师函，自动维权。",
@@ -298,7 +318,7 @@ def calculate_file_dna(uploaded_file):
 def generate_certificate(filename, file_hash, block):
     timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
     return f"""
-    ORIGINGUARD MATRIX PROTOCOL V5.7
+    ORIGINGUARD MATRIX PROTOCOL V5.8
     --------------------------------
     ASSET: {filename}
     DNA:   {file_hash}
@@ -383,7 +403,6 @@ if st.session_state.page == 'landing':
         st.markdown(f"""<div style="padding-right:20px;"><h1 class="breathing-text" style="font-size:56px; margin-bottom:20px; text-transform:uppercase;">{T['slogan']}</h1><p class="breathing-text" style="font-size:20px; color:#f8fafc; font-weight:600; line-height:1.5; font-family:monospace;">{T['sub_slogan']}</p></div>""", unsafe_allow_html=True)
         st.markdown(f"<div style='margin-top:40px; color:#FCD535; font-weight:bold; font-family:monospace;'>🟢 [LIVE_FEED] Solana Mainnet Block: #{get_real_solana_block()}</div>", unsafe_allow_html=True)
     with c2:
-        # ⚠️ V5.7 动态终端标题 (Terminal Live Header)
         st.markdown(f"""<div class="auth-header">🛡️ OriginGuard ID [TERMINAL]</div>""", unsafe_allow_html=True)
         
         tl, tr = st.tabs([T['tab_login'], T['tab_reg']])

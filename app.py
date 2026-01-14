@@ -82,7 +82,7 @@ OriginGuard 是一家技术提供商，而**非律师事务所**。"""
 }
 
 # ==========================================
-# 4. 动态 CSS (V5.8: 全域动态 + 清晰修正)
+# 4. 动态 CSS (V5.9: 标签高亮修正 + 黑客帝国)
 # ==========================================
 st.markdown("""
 <style>
@@ -120,7 +120,17 @@ st.markdown("""
         z-index: 0; pointer-events: none; opacity: 0.8;
     }
 
-    /* ------------------- 动画库 (Animation Library) ------------------- */
+    /* ------------------- [V5.9 核心修复] 标签高亮协议 ------------------- */
+    /* 强制所有输入框上方的 Label (语言、邮箱、密码) 变为高亮黄 */
+    .stSelectbox label, .stTextInput label, .stFileUploader label, p {
+        color: var(--neon-yellow) !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        font-weight: 700 !important;
+        text-shadow: 2px 2px 0px #000000 !important; /* 增加黑底投影，防止被背景吃掉 */
+        letter-spacing: 0.5px;
+    }
+    
+    /* ------------------- 动画库 ------------------- */
     @keyframes neon-pulse {
         0% { box-shadow: 0 0 5px rgba(15, 255, 0, 0.2); border-color: rgba(15, 255, 0, 0.3); }
         50% { box-shadow: 0 0 15px rgba(15, 255, 0, 0.5); border-color: rgba(15, 255, 0, 0.8); }
@@ -142,12 +152,11 @@ st.markdown("""
         100% { transform: translate(0); }
     }
 
-    /* 应用动态效果 */
     .breathing-text { animation: text-glow 3s ease-in-out infinite alternate; font-weight: 900; }
     .glitch-text { animation: glitch-text 3s infinite linear alternate-reverse; color: var(--neon-yellow) !important; text-shadow: 2px 2px 0px #ff0000; }
     .footer-title, .legal-box h3, .feature-card h3 { animation: text-glow 5s ease-in-out infinite; text-transform: uppercase; letter-spacing: 1px; }
 
-    /* ------------------- 组件样式 (Components) ------------------- */
+    /* ------------------- 组件样式 ------------------- */
     
     /* Login Box */
     div[data-testid="column"]:nth-of-type(2) > div[data-testid="stVerticalBlock"] {
@@ -203,38 +212,20 @@ st.markdown("""
         background-color: var(--neon-green) !important; color: #000 !important;
     }
 
-    /* ------------------- 修复：下拉菜单 (High Contrast) ------------------- */
+    /* Selectbox Visibility (V5.9 Fixed) */
     div[data-baseweb="select"] > div {
-        background-color: #000000 !important; /* 纯黑背景 */
-        color: #ffffff !important; /* 纯白文字 */
-        border: 2px solid #FCD535 !important; /* 币安黄边框 */
+        background-color: #000000 !important;
+        color: #ffffff !important;
+        border: 2px solid var(--neon-yellow) !important;
         font-weight: 700 !important;
         border-radius: 0px !important;
         opacity: 1 !important;
     }
-    /* 下拉选项容器 */
-    div[data-baseweb="popover"], div[data-baseweb="menu"] {
-        background-color: #000000 !important;
-        border: 1px solid #FCD535 !important;
-    }
-    /* 选项文字 */
-    div[data-baseweb="menu"] li {
-        color: #ffffff !important;
-    }
-    /* 选中/悬停项 */
-    div[data-baseweb="menu"] li[aria-selected="true"], div[data-baseweb="menu"] li:hover {
-        background-color: #FCD535 !important;
-        color: #000000 !important;
-    }
-    /* 选中的值显示 */
-    div[data-baseweb="select"] span {
-        color: #ffffff !important;
-    }
-    /* 下拉箭头 */
-    div[data-baseweb="select"] svg {
-        fill: #FCD535 !important;
-        color: #FCD535 !important;
-    }
+    div[data-baseweb="popover"], div[data-baseweb="menu"] { background-color: #000000 !important; border: 1px solid #FCD535 !important; }
+    div[data-baseweb="menu"] li { color: #ffffff !important; }
+    div[data-baseweb="menu"] li[aria-selected="true"], div[data-baseweb="menu"] li:hover { background-color: #FCD535 !important; color: #000000 !important; }
+    div[data-baseweb="select"] span { color: #ffffff !important; }
+    div[data-baseweb="select"] svg { fill: #FCD535 !important; color: #FCD535 !important; }
 
     /* Footer & Invisible Buttons */
     .footer-title { border-bottom: 2px solid var(--neon-green); padding-bottom: 5px; margin-bottom: 15px; display: inline-block;}
@@ -247,7 +238,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 5. 语言字典 (Updated Slogan)
+# 5. 语言字典 (Slogan 锁定: 保护你的原创作品视频照片等)
 # ==========================================
 TRANS = {
     "English": {
@@ -263,14 +254,13 @@ TRANS = {
         "err_login": "❌ ACCESS DENIED. TRY 'origin2026'.",
         "suc_reg": "✅ IDENTITY CREATED. PLEASE LOG IN.",
         "or_connect": "--- OR ESTABLISH CONNECTION VIA ---",
-        "core_title": "CORE_DEFENSE_MATRIX_V5.8",
+        "core_title": "CORE_DEFENSE_MATRIX_V5.9",
         "c1_t": "INVISIBLE_DNA", "c1_d": "AI-embedded stealth watermarks immune to cropping algos.",
         "c2_t": "ON-CHAIN_TRUTH", "c2_d": "Immutable Solana transaction certificates finalized instantly.",
         "c3_t": "LEGAL_HAMMER_AI", "c3_d": "Millisecond generation of transnational DMCA takedown notices."
     },
     "中文": {
-        # ⚠️ 修正 Slogan
-        "slogan": "保护你的原创作品视频照片等",
+        "slogan": "保护你的原创作品视频照片等", # <--- LOCKED
         "sub_slogan": "> Web3 版权防御全球标准 | 系统已就绪",
         "cookie_msg": "[系统提示] 必要 Cookie 已初始化。继续操作即视为同意协议。",
         "cookie_btn": "确认并接入",
@@ -282,7 +272,7 @@ TRANS = {
         "err_login": "❌ 访问被拒绝。尝试凭证 'origin2026'。",
         "suc_reg": "✅ 身份已创建。请接入终端。",
         "or_connect": "--- 或通过以下方式建立连接 ---",
-        "core_title": "核心防御矩阵_V5.8",
+        "core_title": "核心防御矩阵_V5.9",
         "c1_t": "隐形 DNA 技术", "c1_d": "AI 嵌入式隐形水印，免疫各类裁剪算法攻击。",
         "c2_t": "链上真理存证", "c2_d": "Solana 区块链永久存证交易，毫秒级确认。",
         "c3_t": "AI 法律重锤", "c3_d": "毫秒级生成跨国 DMCA 律师函，自动维权。",
@@ -318,7 +308,7 @@ def calculate_file_dna(uploaded_file):
 def generate_certificate(filename, file_hash, block):
     timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
     return f"""
-    ORIGINGUARD MATRIX PROTOCOL V5.8
+    ORIGINGUARD MATRIX PROTOCOL V5.9
     --------------------------------
     ASSET: {filename}
     DNA:   {file_hash}
@@ -345,7 +335,6 @@ SVG_FACEBOOK = """<svg viewBox="0 0 24 24" width="20"><path fill="white" d="M9.1
 SVG_GITHUB_FOOTER = """<svg viewBox="0 0 24 24" width="20"><path fill="white" d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>"""
 SVG_GOOGLE = """<svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.63-.06-1.25-.17-1.84H9v3.49h4.84c-.21 1.12-.85 2.07-1.8 2.71v2.24h2.91c1.7-1.56 2.68-3.87 2.68-6.6z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.24c-.81.54-1.84.86-3.05.86-2.34 0-4.32-1.58-5.03-3.71H.99v2.33C2.47 15.93 5.48 18 9 18z"/><path fill="#FBBC05" d="M3.97 10.73c-.18-.54-.28-1.12-.28-1.73s.1-1.19.28-1.73V4.94H.99c-.62 1.24-.98 2.63-.98 4.06s.36 2.82.98 4.06l2.98-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.59C13.47.89 11.43 0 9 0 5.48 0 2.47 2.07.99 4.94l2.98 2.33c.71-2.13 2.69-3.71 5.03-3.71z"/></svg>"""
 SVG_APPLE = """<svg width="18" height="18" viewBox="0 0 384 512" style="fill:white"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 52.3-11.4 69.5-34.3z"/></svg>"""
-SVG_GITHUB = """<svg width="18" height="18" viewBox="0 0 1024 1024" style="fill:white"><path d="M511.6 76.3C264.3 76.2 64 276.4 64 523.5 64 718.9 189.3 885 363.8 946c23.5 5.9 19.9-10.8 19.9-22.2v-77.5c-135.7 15.9-141.2-73.9-150.3-88.9C215 726 171.5 718 184.5 703c30.9-15.9 62.4 4 98.9 57.9 26.4 39.1 77.9 32.5 104 26 5.7-23.5 17.9-44.5 34.7-60.8-140.6-25.2-199.2-111-199.2-213 0-49.5 16.3-95 48.3-131.7-20.4-60.5 1.9-112.3 4.9-120 58.1-5.2 118.5 41.6 123.2 45.3 33-8.9 70.7-13.6 112.9-13.6 42.4 0 80.2 4.9 113.5 13.9 11.3-8.6 67.3-48.8 121.3-43.9 2.9 7.7 24.7 58.3 5.5 118 32.4 36.8 48.9 82.7 48.9 132.3 0 102.2-59 188.1-200 212.9a127.5 127.5 0 0 1 38.1 91v112.5c.8 9 0 17.9 15 17.9 177.1-59.7 304.6-227 304.6-424.1 0-247.2-200.4-447.3-447.5-447.3z"/></svg>"""
 
 # --- Footer ---
 def render_footer_components():

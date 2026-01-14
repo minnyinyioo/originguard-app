@@ -16,7 +16,13 @@ st.set_page_config(
 )
 
 # ==========================================
-# 2. 法律文本常量库 (IMMUTABLE LEGAL TEXTS)
+# 2. 语言状态管理 (Session State)
+# ==========================================
+if 'language' not in st.session_state:
+    st.session_state.language = "中文" # 默认中文
+
+# ==========================================
+# 3. 法律文本常量库 (IMMUTABLE)
 # ==========================================
 LEGAL_CONSTANTS = {
     "English": {
@@ -26,26 +32,17 @@ OriginGuard is a tool for creators, not thieves.
 
 ### 2. LIABILITY DISCLAIMER
 **You bear full legal consequences for non-original content.**
-If you upload stolen assets, you indemnify OriginGuard against all claims. We will cooperate with law enforcement to provide your IP and hash logs.
-
-### 3. Service Limits
-We provide immutable evidence. We do not guarantee court rulings.""",
+If you upload stolen assets, you indemnify OriginGuard against all claims. We will cooperate with law enforcement to provide your IP and hash logs.""",
         "refund": """### NO REFUND POLICY (STRICT)
 **Gas fees are paid instantly to the Solana network.**
-
 **ALL SALES ARE FINAL.**
-Once a transaction is initiated, it cannot be canceled, reversed, or refunded.
-By using this service, you waive your right to a cooling-off period.""",
+No cancellations or reversals allowed.""",
         "privacy": """### Data Privacy
-1. **Data Minimization:** We only hash files.
-2. **No Storage:** We do not store original images.
-3. **Ownership:** Your data remains yours.""",
+We only hash files. We do not store original images. Your data remains yours.""",
         "sla": """### Enterprise SLA
-We guarantee **99.9%** API Uptime for Enterprise subscribers.
-Credits are issued for downtime exceeding limits.""",
+99.9% API Uptime Guarantee for Enterprise subscribers.""",
         "disclaimer": """### Legal Disclaimer
-OriginGuard is a technology provider, **not a law firm**.
-The "Legal Hammer" tools are for reference only."""
+OriginGuard is a technology provider, **not a law firm**."""
     },
     "中文": {
         "tos": """### 1. 原创性强制承诺
@@ -54,26 +51,18 @@ OriginGuard 是为创作者服务的平台，绝不庇护盗窃者。
 
 ### 2. 侵权后果自负
 **如上传非原创内容，您将承担全部法律后果。**
-若发生版权纠纷，您同意赔偿 OriginGuard 的一切损失。我们将配合执法机构提供您的 IP 和哈希日志。
-
-### 3. 服务限制
-我们提供不可篡改的证据，但不保证特定法庭的判决结果。""",
+若发生版权纠纷，您同意赔偿 OriginGuard 的一切损失。我们将配合执法机构提供您的 IP 和哈希日志。""",
         "refund": """### 🚫 无退款政策 (No Refund)
 **Gas 费已实时支付给区块链网络。**
-
 **所有交易均为最终交易。**
-OriginGuard 不支持任何形式的退款、撤销或回滚操作。
-请在支付前仔细确认。""",
+OriginGuard 不支持任何形式的退款、撤销或回滚操作。""",
         "privacy": """### 🔒 隐私政策
 1. **数据最小化**：我们只存储文件的数字哈希值。
-2. **不存原图**：您的原始高清图片从未上传到我们的服务器。
-3. **数据主权**：数据归您所有。""",
+2. **不存原图**：您的原始高清图片从未上传到我们的服务器。""",
         "sla": """### ⚡ SLA 服务承诺
-对于企业版订阅用户，我们承诺 **99.9%** 的 API 在线率。
-如未达标，我们将按照合同约定进行赔偿。""",
+对于企业版订阅用户，我们承诺 **99.9%** 的 API 在线率。""",
         "disclaimer": """### ⚠️ 免责声明
-OriginGuard 是一家技术提供商，而**非律师事务所**。
-我们提供的“自动律师函”仅供参考，不构成法律建议。"""
+OriginGuard 是一家技术提供商，而**非律师事务所**。"""
     },
     "Myanmar": {
         "tos": """### မူရင်းပိုင်ရှင်ဖြစ်ရမည်
@@ -94,123 +83,72 @@ Blockchain ငွေပေးချေမှုများသည် ပြင�
 }
 
 # ==========================================
-# 3. 动态 CSS (V4.7: 全栈布局 + 肌肉填充)
+# 4. 动态 CSS (V4.8: 修复空框 + 底部语言栏)
 # ==========================================
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&family=Padauk:wght@400;700&family=Noto+Sans+Myanmar:wght@400;700&display=swap');
 
-    /* 1. 背景动画：风暴级星尘 */
+    /* 1. 背景动画 */
     @keyframes move-background {
         from {transform: translate3d(0px, -200px, 0px);}
         to {transform: translate3d(0px, 800px, 0px);}
     }
-    @keyframes nebula-pulse {
-        0% { background-size: 100% 100%; }
-        50% { background-size: 110% 110%; }
-        100% { background-size: 100% 100%; }
-    }
-    
     .stApp {
         background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #020617 90%);
         color: #ffffff !important; 
         font-family: 'Inter', 'Padauk', 'Noto Sans Myanmar', sans-serif !important;
-        animation: nebula-pulse 10s ease-in-out infinite;
     }
     .stApp::before {
-        content: "";
-        position: absolute;
-        top: -1000px;
-        left: 0;
-        width: 100%;
-        height: 300%;
+        content: ""; position: absolute; top: -1000px; left: 0; width: 100%; height: 300%;
         background-image: 
             radial-gradient(3px 3px at 100px 50px, #22d3ee, transparent),
-            radial-gradient(4px 4px at 300px 450px, #818cf8, transparent),
             radial-gradient(2px 2px at 600px 100px, #ffffff, transparent),
             radial-gradient(3px 3px at 800px 300px, #FCD535, transparent);
         background-size: 800px 800px;
-        animation: move-background 15s linear infinite;
-        opacity: 0.7;
-        z-index: 0;
-        pointer-events: none;
+        animation: move-background 15s linear infinite; opacity: 0.7; z-index: 0; pointer-events: none;
     }
 
-    /* 2. 法律条款/核心功能卡片专用容器 (统一黑底风格) */
-    .legal-box, .feature-card {
-        background-color: #000000 !important;
-        border: 1px solid #333;
-        padding: 25px;
-        border-radius: 12px;
-        color: #ffffff !important;
-        font-size: 16px;
-        line-height: 1.6;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.8);
-        margin-bottom: 20px;
-        position: relative;
-        z-index: 2;
-        transition: transform 0.3s;
-    }
-    .feature-card:hover {
-        transform: translateY(-5px);
-        border-color: #22d3ee;
-        box-shadow: 0 0 20px rgba(34, 211, 238, 0.2);
-    }
-    .legal-box h3, .feature-card h3 { 
-        color: #FCD535 !important; 
-        margin-top: 0; 
-        font-size: 20px; 
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    /* 3. 按钮脉冲特效 */
-    @keyframes pulse-intense {
-        0% { box-shadow: 0 0 0 0 rgba(252, 213, 53, 0.7); transform: scale(1); }
-        50% { box-shadow: 0 0 20px 10px rgba(252, 213, 53, 0); transform: scale(1.03); }
-        100% { box-shadow: 0 0 0 0 rgba(252, 213, 53, 0); transform: scale(1); }
-    }
-    /* Primary */
-    button[kind="primary"] {
-        background: linear-gradient(90deg, #FCD535 0%, #FBC100 100%) !important;
-        color: #1e2329 !important;
-        border: none !important;
-        font-weight: 800 !important;
-        transition: all 0.2s;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        position: relative;
-        z-index: 5;
-    }
-    button[kind="primary"]:hover {
-        animation: pulse-intense 1s infinite;
-    }
-    /* Secondary */
-    div.stButton > button:not([kind="primary"]) {
-        background-color: rgba(15, 23, 42, 0.8) !important;
-        color: #e2e8f0 !important;
-        border: 1px solid rgba(148, 163, 184, 0.4) !important;
-        border-radius: 6px;
-        backdrop-filter: blur(5px);
-    }
-    div.stButton > button:not([kind="primary"]):hover {
-        border-color: #FCD535 !important;
-        color: #fff !important;
-        background-color: rgba(15, 23, 42, 1) !important;
-        box-shadow: 0 0 15px rgba(252, 213, 53, 0.3);
-    }
-
-    /* 4. Auth Card */
-    .auth-card {
-        background: rgba(15, 23, 42, 0.85);
-        backdrop-filter: blur(25px);
-        border: 1px solid rgba(255,255,255,0.15);
+    /* 2. 修复空框：直接给 Landing 页的右侧列添加玻璃态背景 */
+    /* 只针对 Landing 页面的第二个列 (登录框所在列) */
+    div[data-testid="column"]:nth-of-type(2) > div[data-testid="stVerticalBlock"] {
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.1);
         padding: 30px;
         border-radius: 16px;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-        margin-top: 20px;
-        position: relative;
-        z-index: 5;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        /* 确保这个样式只在 landing 页生效的简单 hack: 依赖页面结构 */
+    }
+
+    /* 3. 法律条款/功能卡片 */
+    .legal-box, .feature-card {
+        background-color: #000000 !important;
+        border: 1px solid #333; padding: 25px; border-radius: 12px;
+        color: #ffffff !important; font-size: 16px; line-height: 1.6;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.8); margin-bottom: 20px; z-index: 2; position: relative;
+    }
+    .legal-box h3, .feature-card h3 { color: #FCD535 !important; margin-top: 0; font-size: 20px; }
+
+    /* 4. 按钮脉冲 */
+    @keyframes pulse-yellow {
+        0% { box-shadow: 0 0 0 0 rgba(252, 213, 53, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(252, 213, 53, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(252, 213, 53, 0); }
+    }
+    button[kind="primary"] {
+        background: linear-gradient(90deg, #FCD535 0%, #FBC100 100%) !important;
+        color: #1e2329 !important; border: none !important; font-weight: 800 !important;
+        transition: all 0.3s;
+    }
+    button[kind="primary"]:hover { transform: scale(1.02); animation: pulse-yellow 1.5s infinite; }
+    
+    div.stButton > button:not([kind="primary"]) {
+        background-color: rgba(30, 41, 59, 0.6) !important; color: #e2e8f0 !important;
+        border: 1px solid rgba(148, 163, 184, 0.3) !important; border-radius: 6px;
+    }
+    div.stButton > button:not([kind="primary"]):hover {
+        border-color: #FCD535 !important; color: #fff !important; background-color: rgba(30, 41, 59, 1) !important;
     }
 
     /* 5. 真实 Logo 按钮 */
@@ -219,56 +157,64 @@ st.markdown("""
         width: 100%; padding: 10px; border-radius: 8px; font-weight: 600;
         cursor: pointer; transition: transform 0.2s; margin-bottom: 10px; text-decoration: none !important;
     }
-    .real-logo-btn:hover { transform: scale(1.02); filter: brightness(1.1); }
+    .real-logo-btn:hover { transform: scale(1.02); }
     .btn-google { background: white; color: #3c4043; border: 1px solid #dadce0; }
     .btn-apple { background: black; color: white; border: 1px solid #333; }
     .btn-github { background: #24292e; color: white; border: 1px solid #333; }
 
-    /* 6. Footer Title */
-    .footer-title { color: #FCD535; font-weight: 700; font-size: 14px; margin-bottom: 10px; text-transform: uppercase; text-shadow: 0 0 10px rgba(252, 213, 53, 0.3); }
-    
-    /* 7. Breathing Text */
-    @keyframes breathe-deep {
-        0% { opacity: 0.9; text-shadow: 0 0 10px rgba(34, 211, 238, 0.2); transform: translateY(0); }
-        50% { opacity: 1; text-shadow: 0 0 30px rgba(34, 211, 238, 0.8); transform: translateY(-3px); }
-        100% { opacity: 0.9; text-shadow: 0 0 10px rgba(34, 211, 238, 0.2); transform: translateY(0); }
+    /* 6. Cookie & Footer */
+    .cookie-banner {
+        position: fixed; bottom: 0; left: 0; width: 100%; background: #1e2329;
+        border-top: 2px solid #FCD535; padding: 20px; z-index: 9999;
+        display: flex; justify-content: center; align-items: center;
+        box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
     }
-    .breathing-text { animation: breathe-deep 3s ease-in-out infinite; }
+    .footer-title { color: #FCD535; font-weight: 700; font-size: 14px; margin-bottom: 10px; text-transform: uppercase; }
+    
+    /* 7. Language Switcher Buttons */
+    .lang-btn { margin: 0 5px; font-size: 14px; color: #94a3b8; cursor: pointer; text-decoration: none; }
+    .lang-btn:hover { color: #FCD535; }
+
+    /* 8. Breathing Text */
+    @keyframes breathe {
+        0% { opacity: 0.9; text-shadow: 0 0 5px rgba(255,255,255,0.1); }
+        50% { opacity: 1; text-shadow: 0 0 25px rgba(34, 211, 238, 0.6); }
+        100% { opacity: 0.9; text-shadow: 0 0 5px rgba(255,255,255,0.1); }
+    }
+    .breathing-text { animation: breathe 3s ease-in-out infinite; }
 </style>
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 4. 语言字典 (已补全核心技术文案)
+# 5. 语言字典
 # ==========================================
 TRANS = {
     "English": {
         "slogan": "Protect Your Original Videos & Photos",
         "sub_slogan": "The Global Standard for Web3 Copyright Defense.",
-        "cookie_msg": "We use strictly necessary cookies to maintain your cryptographic session and ensure asset security. By using OriginGuard, you agree to our Terms.",
-        "cookie_btn": "Accept & Secure Session",
+        "cookie_msg": "We use strictly necessary cookies. By continuing, you agree to our Terms.",
+        "cookie_btn": "Accept",
         "f_comm": "Community", "f_legal": "Legal", "f_prod": "Products", "f_serv": "Support",
-        "titles": ["Terms (Originality)", "No Refund Policy", "Privacy", "SLA", "Disclaimer"],
         "dev_msg": "🚧 Feature currently under active development.",
         # Auth
         "tab_login": "Sign In", "tab_reg": "Register",
         "lbl_email": "Email / Access Code", "lbl_pwd": "Password", "lbl_cpwd": "Confirm Password",
-        "btn_login": "Sign In", "btn_reg": "Start Your Originality Protection Journey",
+        "btn_login": "Sign In", "btn_reg": "Start Protection Journey",
         "err_login": "Invalid Credentials. Try 'origin2026'.",
         "suc_reg": "Account created! Please log in.",
         "or_connect": "OR CONNECT WITH",
-        # Core Features (Refill)
+        # Features
         "core_title": "Core Defense Matrix",
-        "c1_t": "Invisible DNA", "c1_d": "AI-embedded watermarks immune to cropping and compression.",
-        "c2_t": "On-Chain Truth", "c2_d": "Immutable Solana certificates providing permanent proof of ownership.",
-        "c3_t": "Legal Hammer", "c3_d": "Automated DMCA takedown notices generated in milliseconds."
+        "c1_t": "Invisible DNA", "c1_d": "AI-embedded watermarks immune to cropping.",
+        "c2_t": "On-Chain Truth", "c2_d": "Immutable Solana certificates.",
+        "c3_t": "Legal Hammer", "c3_d": "Automated DMCA takedown notices."
     },
     "中文": {
         "slogan": "保护你的原创作品视频照片等",
         "sub_slogan": "Web3 版权保护全球标准 | 自动确权与维权",
-        "cookie_msg": "OriginGuard 使用必要的 Cookie 来维护您的加密会话并确保资产安全。继续使用即表示您同意我们的服务条款。",
-        "cookie_btn": "接受并保护会话",
+        "cookie_msg": "我们使用必要的 Cookie 确保安全。继续使用即表示您同意我们的条款。",
+        "cookie_btn": "接受并继续",
         "f_comm": "官方社区", "f_legal": "法律条款", "f_prod": "产品中心", "f_serv": "客户支持",
-        "titles": ["原创性条款", "无退款政策", "隐私政策", "SLA承诺", "免责声明"],
         "dev_msg": "🚧 该功能正在紧急开发中，敬请期待。",
         # Auth
         "tab_login": "登录", "tab_reg": "注册",
@@ -277,11 +223,11 @@ TRANS = {
         "err_login": "凭证错误。演示密码为 'origin2026'。",
         "suc_reg": "账户创建成功！请登录。",
         "or_connect": "或通过以下方式连接",
-        # Core Features
+        # Features
         "core_title": "核心防御矩阵",
-        "c1_t": "隐形 DNA", "c1_d": "免疫裁剪和压缩的 AI 隐形水印，删不掉的数字指纹。",
-        "c2_t": "链上真理", "c2_d": "Solana 链上永久存证，生成不可篡改的法律权属证书。",
-        "c3_t": "AI 法律重锤", "c3_d": "毫秒级生成跨国 DMCA 律师函，自动打击侵权行为。"
+        "c1_t": "隐形 DNA", "c1_d": "免疫裁剪和压缩的 AI 隐形水印。",
+        "c2_t": "链上真理", "c2_d": "Solana 链上永久存证。",
+        "c3_t": "AI 法律重锤", "c3_d": "毫秒级生成跨国 DMCA 律师函。"
     },
     "Myanmar": {
         "slogan": "ဖန်တီးမှုများကို ကာကွယ်ပါ",
@@ -289,7 +235,6 @@ TRANS = {
         "cookie_msg": "လုံခြုံရေးအတွက် Cookie အသုံးပြုပါသည်။",
         "cookie_btn": "လက်ခံမည်",
         "f_comm": "ကွန်မြူနတီ", "f_legal": "ဥပဒေ", "f_prod": "ထုတ်ကုန်များ", "f_serv": "ဝန်ဆောင်မှု",
-        "titles": ["စည်းမျဉ်းများ", "ငွေပြန်မအမ်းပါ", "လုံခြုံရေး", "SLA", "ငြင်းဆိုချက်"],
         "dev_msg": "🚧 တည်ဆောက်ဆဲ",
         # Auth
         "tab_login": "အကောင့်ဝင်ရန်", "tab_reg": "စာရင်းသွင်းရန်",
@@ -298,20 +243,20 @@ TRANS = {
         "err_login": "မှားယွင်းနေသည်။",
         "suc_reg": "အောင်မြင်ပါသည်။",
         "or_connect": "ချိတ်ဆက်ပါ",
-        # Core Features
+        # Features
         "core_title": "အဓိက နည်းပညာများ",
         "c1_t": "မမြင်ရသော ရေစာ", "c1_d": "AI နည်းပညာဖြင့် ပုံရိပ်ထဲတွင် မြှုပ်နှံထားသည်။",
         "c2_t": "Blockchain သက်သေ", "c2_d": "Solana ပေါ်တွင် ဖျက်၍မရသော မှတ်တမ်း။",
-        "c3_t": "AI ဥပဒေ လက်နက်", "c3_d": "DMCA တိုင်ကြားစာ အလိုအလျောက် ပေးပို့ခြင်း။"
+        "c3_t": "AI ဥပဒေ လက်နက်", "c3_d": "DMCA တိုင်ကြားစာ။"
     }
 }
 
 # ==========================================
-# 5. 逻辑控制 & RPC
+# 6. 逻辑控制
 # ==========================================
-lang_choice = st.sidebar.selectbox("🌐 Language", ["English", "中文", "Myanmar"], index=1)
-T = TRANS[lang_choice]
-L_TEXT = LEGAL_CONSTANTS[lang_choice]
+# 获取当前语言
+T = TRANS[st.session_state.language]
+L_TEXT = LEGAL_CONSTANTS[st.session_state.language]
 
 if 'page' not in st.session_state: st.session_state.page = 'landing'
 if 'auth' not in st.session_state: st.session_state.auth = False
@@ -341,21 +286,22 @@ SVG_GOOGLE = """<svg width="18" height="18" viewBox="0 0 18 18"><path fill="#428
 SVG_APPLE = """<svg width="18" height="18" viewBox="0 0 384 512" style="fill:white"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 52.3-11.4 69.5-34.3z"/></svg>"""
 SVG_GITHUB = """<svg width="18" height="18" viewBox="0 0 1024 1024" style="fill:white"><path d="M511.6 76.3C264.3 76.2 64 276.4 64 523.5 64 718.9 189.3 885 363.8 946c23.5 5.9 19.9-10.8 19.9-22.2v-77.5c-135.7 15.9-141.2-73.9-150.3-88.9C215 726 171.5 718 184.5 703c30.9-15.9 62.4 4 98.9 57.9 26.4 39.1 77.9 32.5 104 26 5.7-23.5 17.9-44.5 34.7-60.8-140.6-25.2-199.2-111-199.2-213 0-49.5 16.3-95 48.3-131.7-20.4-60.5 1.9-112.3 4.9-120 58.1-5.2 118.5 41.6 123.2 45.3 33-8.9 70.7-13.6 112.9-13.6 42.4 0 80.2 4.9 113.5 13.9 11.3-8.6 67.3-48.8 121.3-43.9 2.9 7.7 24.7 58.3 5.5 118 32.4 36.8 48.9 82.7 48.9 132.3 0 102.2-59 188.1-200 212.9a127.5 127.5 0 0 1 38.1 91v112.5c.8 9 0 17.9 15 17.9 177.1-59.7 304.6-227 304.6-424.1 0-247.2-200.4-447.3-447.5-447.3z"/></svg>"""
 
-# --- Footer ---
+# --- 组件：大页脚 ---
 def render_fat_footer():
     st.write("")
     st.markdown("---")
+    
     c1, c2, c3, c4 = st.columns(4)
     
     with c1:
         st.markdown(f"<div class='footer-title'>{T['f_comm']}</div>", unsafe_allow_html=True)
         st.markdown(f"""
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button onclick="alert('Discord')" style="background:none; border:none; cursor:pointer;">{SVG_DISCORD}</button>
-            <button onclick="alert('X')" style="background:none; border:none; cursor:pointer;">{SVG_TWITTER}</button>
-            <button onclick="alert('Telegram')" style="background:none; border:none; cursor:pointer;">{SVG_TELEGRAM}</button>
-            <button onclick="alert('Facebook')" style="background:none; border:none; cursor:pointer;">{SVG_FACEBOOK}</button>
-            <button onclick="alert('GitHub')" style="background:none; border:none; cursor:pointer;">{SVG_GITHUB_FOOTER}</button>
+            <button onclick="alert('Developing')" style="background:none; border:none; cursor:pointer;" title="Discord">{SVG_DISCORD}</button>
+            <button onclick="alert('Developing')" style="background:none; border:none; cursor:pointer;" title="Twitter/X">{SVG_TWITTER}</button>
+            <button onclick="alert('Developing')" style="background:none; border:none; cursor:pointer;" title="Telegram">{SVG_TELEGRAM}</button>
+            <button onclick="alert('Developing')" style="background:none; border:none; cursor:pointer;" title="Facebook">{SVG_FACEBOOK}</button>
+            <button onclick="alert('Developing')" style="background:none; border:none; cursor:pointer;" title="GitHub">{SVG_GITHUB_FOOTER}</button>
         </div>
         """, unsafe_allow_html=True)
 
@@ -379,21 +325,37 @@ def render_fat_footer():
              st.session_state.view_legal = "sla"; set_page('legal_view'); st.rerun()
         st.info("✉️ support@originguard.com")
 
-    st.markdown("<div style='text-align:center; color:#64748b; font-size:12px; margin-top:30px;'>© 2026 OriginGuard Solutions Inc.</div>", unsafe_allow_html=True)
+    # 底部语言切换栏
+    st.markdown("---")
+    cL1, cL2, cL3 = st.columns([1,2,1])
+    with cL2:
+        # 使用列布局来放置语言按钮
+        cols = st.columns(3)
+        if cols[0].button("中文", use_container_width=True): st.session_state.language="中文"; st.rerun()
+        if cols[1].button("English", use_container_width=True): st.session_state.language="English"; st.rerun()
+        if cols[2].button("Myanmar", use_container_width=True): st.session_state.language="Myanmar"; st.rerun()
     
+    st.markdown("<div style='text-align:center; color:#64748b; font-size:12px; margin-top:20px;'>© 2026 OriginGuard Solutions Inc.</div>", unsafe_allow_html=True)
+    
+    # Cookie Banner
     if not st.session_state.cookies_accepted:
-        st.markdown(f"""<div class="cookie-banner"><span style="color:#fff; font-size:16px; margin-right:20px;">🍪 {T['cookie_msg']}</span></div>""", unsafe_allow_html=True)
+        st.markdown(f"""
+        <div class="cookie-banner">
+            <span style="color:#fff; font-size:16px; margin-right:20px;">🍪 {T['cookie_msg']}</span>
+        </div>
+        """, unsafe_allow_html=True)
         c_k1, c_k2, c_k3 = st.columns([1,1,1])
         with c_k2:
              if st.button(T['cookie_btn'], type="primary", use_container_width=True, key="cookie_accept"):
-                st.session_state.cookies_accepted = True; st.rerun()
+                st.session_state.cookies_accepted = True
+                st.rerun()
 
-# --- 1. Landing + Auth + Core Features (Refill) ---
+# --- 1. 官网首页 ---
 if st.session_state.page == 'landing':
     st.write("")
     
-    # 1.1 Hero Section
     col_text, col_auth = st.columns([1.2, 0.8])
+    
     with col_text:
         st.write(""); st.write("")
         st.markdown(f"""
@@ -406,7 +368,7 @@ if st.session_state.page == 'landing':
         st.markdown(f"<div style='margin-top: 40px; color:#FCD535; font-weight:bold;'>🟢 Solana Mainnet Slot: #{real_block}</div>", unsafe_allow_html=True)
 
     with col_auth:
-        st.markdown('<div class="auth-card">', unsafe_allow_html=True)
+        # 直接使用 Streamlit 组件，CSS 会自动为这个列添加玻璃态背景，无需 DIV 包裹
         tab_login, tab_reg = st.tabs([T['tab_login'], T['tab_reg']])
         with tab_login:
             pwd = st.text_input(T['lbl_email'], type="password", key="login_pwd", placeholder="origin2026")
@@ -424,18 +386,14 @@ if st.session_state.page == 'landing':
             if st.button(T['btn_reg'], type="primary", use_container_width=True):
                 with st.spinner("Creating Identity..."): time.sleep(2)
                 st.success(T['suc_reg']); time.sleep(1); st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
 
-    # 1.2 Core Features (Fixing the Empty Space)
+    # Core Features
     st.write(""); st.write(""); st.markdown("---")
     st.subheader(T['core_title'])
     fc1, fc2, fc3 = st.columns(3)
-    with fc1:
-        st.markdown(f"""<div class="feature-card"><h3>👁️ {T['c1_t']}</h3><p>{T['c1_d']}</p></div>""", unsafe_allow_html=True)
-    with fc2:
-        st.markdown(f"""<div class="feature-card"><h3>⛓️ {T['c2_t']}</h3><p>{T['c2_d']}</p></div>""", unsafe_allow_html=True)
-    with fc3:
-        st.markdown(f"""<div class="feature-card"><h3>⚖️ {T['c3_t']}</h3><p>{T['c3_d']}</p></div>""", unsafe_allow_html=True)
+    with fc1: st.markdown(f"""<div class="feature-card"><h3>👁️ {T['c1_t']}</h3><p>{T['c1_d']}</p></div>""", unsafe_allow_html=True)
+    with fc2: st.markdown(f"""<div class="feature-card"><h3>⛓️ {T['c2_t']}</h3><p>{T['c2_d']}</p></div>""", unsafe_allow_html=True)
+    with fc3: st.markdown(f"""<div class="feature-card"><h3>⚖️ {T['c3_t']}</h3><p>{T['c3_d']}</p></div>""", unsafe_allow_html=True)
 
     render_fat_footer()
 

@@ -298,4 +298,162 @@ def handle_dev(): st.toast(T['dev_msg'], icon="🏗️")
 # --- SVG 图标库 (Real Logos) ---
 # Footer Icons
 SVG_DISCORD = """<svg viewBox="0 0 127.14 96.36" width="20"><path fill="white" d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.11,77.11,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.89,105.89,0,0,0,126.6,80.22c2.36-24.44-5.42-48.18-18.9-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>"""
-SVG_TWITTER = """<svg viewBox="0 0 24 24" width="20"><path fill="white" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8
+SVG_TWITTER = """<svg viewBox="0 0 24 24" width="20"><path fill="white" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>"""
+SVG_TELEGRAM = """<svg viewBox="0 0 24 24" width="20"><path fill="white" d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>"""
+# Login Icons
+SVG_GOOGLE = """<svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.63-.06-1.25-.17-1.84H9v3.49h4.84c-.21 1.12-.85 2.07-1.8 2.71v2.24h2.91c1.7-1.56 2.68-3.87 2.68-6.6z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.24c-.81.54-1.84.86-3.05.86-2.34 0-4.32-1.58-5.03-3.71H.99v2.33C2.47 15.93 5.48 18 9 18z"/><path fill="#FBBC05" d="M3.97 10.73c-.18-.54-.28-1.12-.28-1.73s.1-1.19.28-1.73V4.94H.99c-.62 1.24-.98 2.63-.98 4.06s.36 2.82.98 4.06l2.98-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.59C13.47.89 11.43 0 9 0 5.48 0 2.47 2.07.99 4.94l2.98 2.33c.71-2.13 2.69-3.71 5.03-3.71z"/></svg>"""
+SVG_APPLE = """<svg width="18" height="18" viewBox="0 0 384 512" style="fill:white"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 52.3-11.4 69.5-34.3z"/></svg>"""
+SVG_GITHUB = """<svg width="18" height="18" viewBox="0 0 1024 1024" style="fill:white"><path d="M511.6 76.3C264.3 76.2 64 276.4 64 523.5 64 718.9 189.3 885 363.8 946c23.5 5.9 19.9-10.8 19.9-22.2v-77.5c-135.7 15.9-141.2-73.9-150.3-88.9C215 726 171.5 718 184.5 703c30.9-15.9 62.4 4 98.9 57.9 26.4 39.1 77.9 32.5 104 26 5.7-23.5 17.9-44.5 34.7-60.8-140.6-25.2-199.2-111-199.2-213 0-49.5 16.3-95 48.3-131.7-20.4-60.5 1.9-112.3 4.9-120 58.1-5.2 118.5 41.6 123.2 45.3 33-8.9 70.7-13.6 112.9-13.6 42.4 0 80.2 4.9 113.5 13.9 11.3-8.6 67.3-48.8 121.3-43.9 2.9 7.7 24.7 58.3 5.5 118 32.4 36.8 48.9 82.7 48.9 132.3 0 102.2-59 188.1-200 212.9a127.5 127.5 0 0 1 38.1 91v112.5c.8 9 0 17.9 15 17.9 177.1-59.7 304.6-227 304.6-424.1 0-247.2-200.4-447.3-447.5-447.3z"/></svg>"""
+
+# --- 组件：大页脚 ---
+def render_fat_footer():
+    st.write("")
+    st.markdown("---")
+    
+    c1, c2, c3, c4 = st.columns(4)
+    
+    with c1:
+        st.markdown(f"<div class='footer-title'>{T['f_comm']}</div>", unsafe_allow_html=True)
+        # 真实 SVG 图标按钮 (使用 st.markdown 模拟)
+        st.markdown(f"""
+        <div style="display:flex; gap:10px;">
+            <button onclick="alert('Developing')" style="background:none; border:none; cursor:pointer;">{SVG_DISCORD}</button>
+            <button onclick="alert('Developing')" style="background:none; border:none; cursor:pointer;">{SVG_TWITTER}</button>
+            <button onclick="alert('Developing')" style="background:none; border:none; cursor:pointer;">{SVG_TELEGRAM}</button>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with c2:
+        st.markdown(f"<div class='footer-title'>{T['f_legal']}</div>", unsafe_allow_html=True)
+        if st.button("Terms (ToS)", key="ft1", use_container_width=True): 
+            st.session_state.view_legal = "tos"; set_page('legal_view'); st.rerun()
+        if st.button("No Refunds", key="ft2", use_container_width=True):
+            st.session_state.view_legal = "refund"; set_page('legal_view'); st.rerun()
+        if st.button("Privacy", key="ft3", use_container_width=True):
+            st.session_state.view_legal = "privacy"; set_page('legal_view'); st.rerun()
+
+    with c3:
+        st.markdown(f"<div class='footer-title'>{T['f_prod']}</div>", unsafe_allow_html=True)
+        if st.button("API Docs", use_container_width=True): handle_dev()
+        if st.button("Solana Scan", use_container_width=True): handle_dev()
+
+    with c4:
+        st.markdown(f"<div class='footer-title'>{T['f_serv']}</div>", unsafe_allow_html=True)
+        if st.button("SLA Guarantee", use_container_width=True):
+             st.session_state.view_legal = "sla"; set_page('legal_view'); st.rerun()
+        st.info("✉️ support@originguard.com")
+
+    st.markdown("<div style='text-align:center; color:#64748b; font-size:12px; margin-top:30px;'>© 2026 OriginGuard Solutions Inc.</div>", unsafe_allow_html=True)
+    
+    # Cookie Banner
+    if not st.session_state.cookies_accepted:
+        st.markdown(f"""
+        <div class="cookie-banner">
+            <span style="color:#fff; font-size:16px; margin-right:20px;">🍪 {T['cookie_msg']}</span>
+        </div>
+        """, unsafe_allow_html=True)
+        c_k1, c_k2, c_k3 = st.columns([1,1,1])
+        with c_k2:
+             if st.button(T['cookie_btn'], type="primary", use_container_width=True, key="cookie_accept"):
+                st.session_state.cookies_accepted = True
+                st.rerun()
+
+# --- 1. 官网首页 (Landing) + 身份网关 (Direct) ---
+if st.session_state.page == 'landing':
+    st.write("")
+    
+    # 使用 1.2:0.8 的比例，左侧文案，右侧登录框
+    col_text, col_auth = st.columns([1.2, 0.8])
+    
+    with col_text:
+        st.write("")
+        st.write("")
+        st.markdown(f"""
+        <div style="padding-right: 20px;">
+            <h1 class="breathing-text" style="font-size: 56px; margin-bottom: 20px;">{T['slogan']}</h1>
+            <p class="breathing-text" style="font-size: 22px; color: #f8fafc; font-weight:600; line-height:1.5;">{T['sub_slogan']}</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        block_num = random.randint(245000000, 245999999)
+        st.markdown(f"<div style='margin-top: 40px; color:#FCD535; font-weight:bold;'>🟢 Solana Mainnet Block #{block_num}</div>", unsafe_allow_html=True)
+
+    with col_auth:
+        # Auth Card 悬浮框
+        st.markdown('<div class="auth-card">', unsafe_allow_html=True)
+        tab_login, tab_reg = st.tabs([T['tab_login'], T['tab_reg']])
+        
+        # 登录逻辑
+        with tab_login:
+            pwd = st.text_input(T['lbl_email'], type="password", key="login_pwd", placeholder="origin2026")
+            if st.button(T['btn_login'], type="primary", use_container_width=True):
+                if pwd == "origin2026":
+                    with st.spinner("Verifying..."): time.sleep(1)
+                    st.session_state.auth = True; set_page('dashboard'); st.rerun()
+                else:
+                    st.error(T['err_login'])
+            
+            st.markdown(f"<div style='text-align:center; color:#94a3b8; font-size:12px; margin:15px 0;'>{T['or_connect']}</div>", unsafe_allow_html=True)
+            # 真实 Logo 按钮模拟
+            st.markdown(f"""
+            <a href="#" class="real-logo-btn btn-google">{SVG_GOOGLE} Continue with Google</a>
+            <a href="#" class="real-logo-btn btn-apple">{SVG_APPLE} Continue with Apple</a>
+            <a href="#" class="real-logo-btn btn-github">{SVG_GITHUB} Continue with GitHub</a>
+            """, unsafe_allow_html=True)
+
+        # 注册逻辑
+        with tab_reg:
+            st.text_input("Email", placeholder="user@example.com")
+            st.text_input(T['lbl_pwd'], type="password", key="reg_pwd")
+            st.text_input(T['lbl_cpwd'], type="password", key="reg_cpwd")
+            # 按钮文案改为：开启旅程
+            if st.button(T['btn_reg'], type="primary", use_container_width=True):
+                with st.spinner("Creating Identity..."): time.sleep(2)
+                st.success(T['suc_reg'])
+                time.sleep(1); st.rerun()
+
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    render_fat_footer()
+
+# --- 2. 控制台 (Dashboard) ---
+elif st.session_state.page == 'dashboard':
+    if not st.session_state.auth: set_page('landing'); st.rerun()
+    
+    with st.sidebar:
+        st.success("🟢 CEO: MNNO")
+        if st.button("Log Out"): st.session_state.auth=False; set_page('landing'); st.rerun()
+
+    st.title("📊 Dashboard")
+    k1, k2, k3, k4 = st.columns(4)
+    k1.metric("Assets", "1,248")
+    k2.metric("Threats", "53", "High", delta_color="inverse")
+    k3.metric("Legal", "41")
+    k4.metric("Saved", "$12,400")
+    
+    st.markdown("---")
+    t1, t2 = st.tabs(["🛡️ Protect", "⚖️ Legal Hammer"])
+    with t1:
+        st.file_uploader("Upload Image", type=['png','jpg'])
+        if st.button("Encrypt", type="primary"): handle_dev()
+    with t2:
+        st.text_input("Infringing URL")
+        if st.button("Send Notice", type="primary"): handle_dev()
+
+    render_fat_footer()
+
+# --- 3. 法律详情页 ---
+elif st.session_state.page == 'legal_view':
+    st.button("⬅️ Back", on_click=lambda: set_page('landing'))
+    st.markdown("---")
+    
+    key = st.session_state.get('view_legal', 'tos')
+    content = L_TEXT.get(key, "Error")
+    
+    st.markdown(f"""
+    <div class="legal-box">
+        {content}
+    </div>
+    """, unsafe_allow_html=True)
+    
+    render_fat_footer()

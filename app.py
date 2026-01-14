@@ -19,7 +19,7 @@ st.set_page_config(
 # 2. 语言状态管理 (Session State)
 # ==========================================
 if 'language' not in st.session_state:
-    st.session_state.language = "中文" # 默认中文
+    st.session_state.language = "中文"
 
 # ==========================================
 # 3. 法律文本常量库 (IMMUTABLE)
@@ -83,7 +83,7 @@ Blockchain ငွေပေးချေမှုများသည် ပြင�
 }
 
 # ==========================================
-# 4. 动态 CSS (V4.8: 修复空框 + 底部语言栏)
+# 4. 动态 CSS (V4.9: 500强细节修补)
 # ==========================================
 st.markdown("""
 <style>
@@ -110,7 +110,6 @@ st.markdown("""
     }
 
     /* 2. 修复空框：直接给 Landing 页的右侧列添加玻璃态背景 */
-    /* 只针对 Landing 页面的第二个列 (登录框所在列) */
     div[data-testid="column"]:nth-of-type(2) > div[data-testid="stVerticalBlock"] {
         background: rgba(15, 23, 42, 0.7);
         backdrop-filter: blur(20px);
@@ -118,7 +117,6 @@ st.markdown("""
         padding: 30px;
         border-radius: 16px;
         box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-        /* 确保这个样式只在 landing 页生效的简单 hack: 依赖页面结构 */
     }
 
     /* 3. 法律条款/功能卡片 */
@@ -171,9 +169,13 @@ st.markdown("""
     }
     .footer-title { color: #FCD535; font-weight: 700; font-size: 14px; margin-bottom: 10px; text-transform: uppercase; }
     
-    /* 7. Language Switcher Buttons */
-    .lang-btn { margin: 0 5px; font-size: 14px; color: #94a3b8; cursor: pointer; text-decoration: none; }
-    .lang-btn:hover { color: #FCD535; }
+    /* 7. Sub-Footer (Terms, Privacy etc.) */
+    .sub-footer {
+        text-align: center; color: #64748b; font-size: 12px; margin-top: 10px;
+        border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;
+    }
+    .sub-footer span { margin: 0 10px; cursor: pointer; transition: color 0.3s; }
+    .sub-footer span:hover { color: #FCD535; }
 
     /* 8. Breathing Text */
     @keyframes breathe {
@@ -329,13 +331,18 @@ def render_fat_footer():
     st.markdown("---")
     cL1, cL2, cL3 = st.columns([1,2,1])
     with cL2:
-        # 使用列布局来放置语言按钮
         cols = st.columns(3)
         if cols[0].button("中文", use_container_width=True): st.session_state.language="中文"; st.rerun()
         if cols[1].button("English", use_container_width=True): st.session_state.language="English"; st.rerun()
         if cols[2].button("Myanmar", use_container_width=True): st.session_state.language="Myanmar"; st.rerun()
     
-    st.markdown("<div style='text-align:center; color:#64748b; font-size:12px; margin-top:20px;'>© 2026 OriginGuard Solutions Inc.</div>", unsafe_allow_html=True)
+    # 填补 Gap 2: Sub-Footer (合规底栏)
+    st.markdown("""
+    <div class="sub-footer">
+        <span>Terms</span> | <span>Privacy</span> | <span>Security</span> | <span>Status</span> | <span>Do not share my personal information</span>
+        <br><br>© 2026 OriginGuard Solutions Inc. All rights reserved.
+    </div>
+    """, unsafe_allow_html=True)
     
     # Cookie Banner
     if not st.session_state.cookies_accepted:
@@ -368,7 +375,9 @@ if st.session_state.page == 'landing':
         st.markdown(f"<div style='margin-top: 40px; color:#FCD535; font-weight:bold;'>🟢 Solana Mainnet Slot: #{real_block}</div>", unsafe_allow_html=True)
 
     with col_auth:
-        # 直接使用 Streamlit 组件，CSS 会自动为这个列添加玻璃态背景，无需 DIV 包裹
+        # 填补 Gap 1: Login Header (身份铭牌)
+        st.markdown("### 🛡️ OriginGuard ID") # 这行标题会自动进入玻璃态列
+        
         tab_login, tab_reg = st.tabs([T['tab_login'], T['tab_reg']])
         with tab_login:
             pwd = st.text_input(T['lbl_email'], type="password", key="login_pwd", placeholder="origin2026")

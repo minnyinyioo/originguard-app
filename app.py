@@ -19,14 +19,16 @@ st.set_page_config(
 # ==========================================
 LEGAL_CONSTANTS = {
     "English": {
-        "tos": """### 1. Acceptance of Terms
-By accessing OriginGuard, you agree to be bound by these Terms.
+        "tos": """### 1. ORIGINALITY MANDATE
+**You certify that all uploaded content is your ORIGINAL creation.**
+OriginGuard is a tool for creators, not thieves.
 
-### 2. Authorized Use
-You affirm that you are the lawful copyright owner of uploaded content. Uploading stolen content will result in immediate ban.
+### 2. LIABILITY DISCLAIMER
+**You bear full legal consequences for non-original content.**
+If you upload stolen assets, you indemnify OriginGuard against all claims. We will cooperate with law enforcement to provide your IP and hash logs.
 
-### 3. Limitation
-We provide blockchain evidence, not legal outcomes.""",
+### 3. Service Limits
+We provide immutable evidence. We do not guarantee court rulings.""",
         "refund": """### NO REFUND POLICY (STRICT)
 **Gas fees are paid instantly to the Solana network.**
 
@@ -45,14 +47,16 @@ OriginGuard is a technology provider, **not a law firm**.
 The "Legal Hammer" tools are for reference only."""
     },
     "中文": {
-        "tos": """### 1. 服务条款
-访问即表示同意本条款。如果您不同意，请立即停止使用。
+        "tos": """### 1. 原创性强制承诺
+**您必须保证上传的所有内容均为您的原创作品。**
+OriginGuard 是为创作者服务的平台，绝不庇护盗窃者。
 
-### 2. 授权使用
-严禁上传盗版内容。一旦发现，我们将立即封禁账号。
+### 2. 侵权后果自负
+**如上传非原创内容，您将承担全部法律后果。**
+若发生版权纠纷，您同意赔偿 OriginGuard 的一切损失。我们将配合执法机构提供您的 IP 和哈希日志。
 
-### 3. 责任限制
-我们提供区块链技术证据，但不承诺特定的法庭判决结果。""",
+### 3. 服务限制
+我们提供不可篡改的证据，但不保证特定法庭的判决结果。""",
         "refund": """### 🚫 无退款政策 (No Refund)
 **Gas 费已实时支付给区块链网络。**
 
@@ -71,8 +75,11 @@ OriginGuard 是一家技术提供商，而**非律师事务所**。
 我们提供的“自动律师函”仅供参考，不构成法律建议。"""
     },
     "Myanmar": {
-        "tos": """### စည်းမျဉ်းများ
-ဤဝန်ဆောင်မှုကို အသုံးပြုခြင်းဖြင့် စည်းကမ်းများကို လိုက်နာရန် သဘောတူပါသည်။""",
+        "tos": """### မူရင်းပိုင်ရှင်ဖြစ်ရမည်
+သင်တင်သော အရာများသည် သင်၏ ကိုယ်ပိုင်ဖန်တီးမှု ဖြစ်ရမည်။
+
+### ဥပဒေအရ တာဝန်ယူမှု
+သူတစ်ပါး၏ လက်ရာများကို ခိုးယူအသုံးပြုပါက ဥပဒေအရ အရေးယူခြင်းကို ခံရမည်။""",
         "refund": """### ငွေပြန်မအမ်းပါ (No Refund)
 Blockchain ငွေပေးချေမှုများသည် ပြင်ဆင်၍မရပါ။
 **ငွေပြန်အမ်းခြင်း မပြုလုပ်နိုင်ပါ။**""",
@@ -86,7 +93,7 @@ Blockchain ငွေပေးချေမှုများသည် ပြင�
 }
 
 # ==========================================
-# 3. 动态 CSS (V4.3: 脉冲交互 + 呼吸波动)
+# 3. 动态 CSS (V4.4: 脉冲 + 真实 Logo + 首页布局)
 # ==========================================
 st.markdown("""
 <style>
@@ -102,7 +109,6 @@ st.markdown("""
         color: #ffffff !important; 
         font-family: 'Inter', 'Padauk', 'Noto Sans Myanmar', sans-serif !important;
     }
-    
     .stApp::before {
         content: "";
         position: absolute;
@@ -121,7 +127,7 @@ st.markdown("""
         pointer-events: none;
     }
 
-    /* 2. 法律条款专用容器 (黑底白字) */
+    /* 2. 法律条款专用容器 */
     .legal-box {
         background-color: #000000 !important;
         border: 1px solid #333;
@@ -133,19 +139,14 @@ st.markdown("""
         box-shadow: 0 5px 20px rgba(0,0,0,0.5);
         margin-bottom: 20px;
     }
-    .legal-box h3 {
-        color: #FCD535 !important;
-        margin-top: 0;
-        font-size: 20px;
-    }
+    .legal-box h3 { color: #FCD535 !important; margin-top: 0; font-size: 20px; }
 
-    /* 3. 按钮脉冲特效 (Tech Pulse) */
+    /* 3. 按钮脉冲特效 & 样式 */
     @keyframes pulse-yellow {
         0% { box-shadow: 0 0 0 0 rgba(252, 213, 53, 0.4); }
         70% { box-shadow: 0 0 0 10px rgba(252, 213, 53, 0); }
         100% { box-shadow: 0 0 0 0 rgba(252, 213, 53, 0); }
     }
-
     /* Primary (Binance Yellow) */
     button[kind="primary"] {
         background: linear-gradient(90deg, #FCD535 0%, #FBC100 100%) !important;
@@ -153,71 +154,76 @@ st.markdown("""
         border: none !important;
         font-weight: 800 !important;
         transition: all 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
     button[kind="primary"]:hover {
-        transform: scale(1.05);
-        animation: pulse-yellow 1.5s infinite; /* 悬停时产生脉冲波动 */
+        transform: scale(1.02);
+        animation: pulse-yellow 1.5s infinite;
     }
-
     /* Secondary (Glass) */
     div.stButton > button:not([kind="primary"]) {
         background-color: rgba(30, 41, 59, 0.6) !important;
         color: #e2e8f0 !important;
         border: 1px solid rgba(148, 163, 184, 0.3) !important;
         border-radius: 6px;
-        transition: all 0.3s;
     }
     div.stButton > button:not([kind="primary"]):hover {
         border-color: #FCD535 !important;
         color: #fff !important;
         background-color: rgba(30, 41, 59, 1) !important;
-        transform: translateY(-2px);
     }
 
-    /* 4. 字体呼吸波动 (Breathing Text) */
-    @keyframes breathe {
-        0% { opacity: 0.8; text-shadow: 0 0 5px rgba(255,255,255,0.1); }
-        50% { opacity: 1; text-shadow: 0 0 20px rgba(34, 211, 238, 0.5); }
-        100% { opacity: 0.8; text-shadow: 0 0 5px rgba(255,255,255,0.1); }
-    }
-    .breathing-text {
-        animation: breathe 3s ease-in-out infinite;
+    /* 4. Auth Card (首页悬浮登录框) */
+    .auth-card {
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.1);
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        margin-top: 20px;
     }
 
-    /* 5. Cookie 弹窗 */
-    .cookie-banner {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        background: #1e2329;
-        border-top: 2px solid #FCD535;
-        padding: 20px;
-        z-index: 9999;
+    /* 5. 真实 Logo 按钮 hack */
+    .real-logo-btn {
         display: flex;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s;
+        margin-bottom: 10px;
+        text-decoration: none !important;
+    }
+    .real-logo-btn:hover { transform: scale(1.02); }
+    .btn-google { background: white; color: #3c4043; border: 1px solid #dadce0; }
+    .btn-apple { background: black; color: white; border: 1px solid #333; }
+    .btn-github { background: #24292e; color: white; border: 1px solid #333; }
+
+    /* 6. Cookie 弹窗 */
+    .cookie-banner {
+        position: fixed; bottom: 0; left: 0; width: 100%;
+        background: #1e2329; border-top: 2px solid #FCD535;
+        padding: 20px; z-index: 9999;
+        display: flex; justify-content: center; align-items: center;
         box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
     }
+
+    /* 7. Footer Title */
+    .footer-title { color: #FCD535; font-weight: 700; font-size: 14px; margin-bottom: 10px; text-transform: uppercase; }
     
-    /* 6. 页脚标题 */
-    .footer-title {
-        color: #FCD535;
-        font-weight: 700;
-        font-size: 14px;
-        margin-bottom: 10px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+    /* 8. Breathing Text */
+    @keyframes breathe {
+        0% { opacity: 0.9; text-shadow: 0 0 5px rgba(255,255,255,0.1); }
+        50% { opacity: 1; text-shadow: 0 0 25px rgba(34, 211, 238, 0.6); }
+        100% { opacity: 0.9; text-shadow: 0 0 5px rgba(255,255,255,0.1); }
     }
-    
-    /* 7. Tabs 样式优化 (登录/注册) */
-    div[data-testid="stTabs"] button {
-        color: #cbd5e1;
-    }
-    div[data-testid="stTabs"] button[aria-selected="true"] {
-        color: #FCD535;
-        border-bottom-color: #FCD535;
-    }
+    .breathing-text { animation: breathe 3s ease-in-out infinite; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -228,50 +234,50 @@ TRANS = {
     "English": {
         "slogan": "Protect What You Create.",
         "sub_slogan": "The Global Standard for Web3 Copyright Defense.",
-        "btn_launch": "🚀 LAUNCH CONSOLE",
-        "cookie_msg": "We use cookies to ensure asset security. By continuing, you agree to our Terms.",
-        "cookie_btn": "Accept & Continue",
+        "cookie_msg": "We use strictly necessary cookies to maintain your cryptographic session and ensure asset security. By using OriginGuard, you agree to our Terms.",
+        "cookie_btn": "Accept & Secure Session",
         "f_comm": "Community", "f_legal": "Legal", "f_prod": "Products", "f_serv": "Support",
-        "titles": ["Terms", "Refund", "Privacy", "SLA", "Disclaimer"],
+        "titles": ["Terms (Originality)", "No Refund Policy", "Privacy", "SLA", "Disclaimer"],
         "dev_msg": "🚧 Feature currently under active development.",
         # Auth
-        "tab_login": "Sign In", "tab_reg": "Create Account",
+        "tab_login": "Sign In", "tab_reg": "Register",
         "lbl_email": "Email / Access Code", "lbl_pwd": "Password", "lbl_cpwd": "Confirm Password",
-        "btn_login": "Login", "btn_reg": "Register New Account",
+        "btn_login": "Sign In", "btn_reg": "Start Your Originality Protection Journey",
         "err_login": "Invalid Credentials. Try 'origin2026'.",
-        "suc_reg": "Account created successfully! Redirecting to login...",
+        "suc_reg": "Account created! Please log in.",
+        "or_connect": "OR CONNECT WITH"
     },
     "中文": {
         "slogan": "捍卫你的数字资产",
         "sub_slogan": "Web3 版权保护全球标准 | 自动确权与维权",
-        "btn_launch": "🚀 启动控制台",
-        "cookie_msg": "我们使用 Cookie 保障您的资产安全。继续使用即表示您同意我们的条款。",
-        "cookie_btn": "接受并继续",
+        "cookie_msg": "OriginGuard 使用必要的 Cookie 来维护您的加密会话并确保资产安全。继续使用即表示您同意我们的服务条款。",
+        "cookie_btn": "接受并保护会话",
         "f_comm": "官方社区", "f_legal": "法律条款", "f_prod": "产品中心", "f_serv": "客户支持",
-        "titles": ["服务条款", "无退款政策", "隐私政策", "SLA承诺", "免责声明"],
+        "titles": ["原创性条款", "无退款政策", "隐私政策", "SLA承诺", "免责声明"],
         "dev_msg": "🚧 该功能正在紧急开发中，敬请期待。",
         # Auth
-        "tab_login": "登录", "tab_reg": "注册账户",
+        "tab_login": "登录", "tab_reg": "注册",
         "lbl_email": "邮箱 / 访问密钥", "lbl_pwd": "密码", "lbl_cpwd": "确认密码",
-        "btn_login": "立即登录", "btn_reg": "注册新账户",
+        "btn_login": "立即登录", "btn_reg": "开启您的原创保护之旅",
         "err_login": "凭证错误。演示密码为 'origin2026'。",
-        "suc_reg": "账户创建成功！正在跳转登录...",
+        "suc_reg": "账户创建成功！请登录。",
+        "or_connect": "或通过以下方式连接"
     },
     "Myanmar": {
         "slogan": "ဖန်တီးမှုများကို ကာကွယ်ပါ",
         "sub_slogan": "Web3 မူပိုင်ခွင့် ကာကွယ်ရေး",
-        "btn_launch": "🚀 စနစ်စတင်မည်",
-        "cookie_msg": "သင့်လုံခြုံရေးအတွက် Cookie အသုံးပြုပါသည်။",
+        "cookie_msg": "လုံခြုံရေးအတွက် Cookie အသုံးပြုပါသည်။",
         "cookie_btn": "လက်ခံမည်",
         "f_comm": "ကွန်မြူနတီ", "f_legal": "ဥပဒေ", "f_prod": "ထုတ်ကုန်များ", "f_serv": "ဝန်ဆောင်မှု",
         "titles": ["စည်းမျဉ်းများ", "ငွေပြန်မအမ်းပါ", "လုံခြုံရေး", "SLA", "ငြင်းဆိုချက်"],
-        "dev_msg": "🚧 တည်ဆောက်ဆဲဖြစ်သည်",
+        "dev_msg": "🚧 တည်ဆောက်ဆဲ",
         # Auth
-        "tab_login": "အကောင့်ဝင်ရန်", "tab_reg": "အကောင့်သစ်ဖွင့်ရန်",
-        "lbl_email": "အီးမေးလ်", "lbl_pwd": "စကားဝှက်", "lbl_cpwd": "စကားဝှက် အတည်ပြုပါ",
-        "btn_login": "ဝင်မည်", "btn_reg": "စာရင်းသွင်းမည်",
+        "tab_login": "အကောင့်ဝင်ရန်", "tab_reg": "စာရင်းသွင်းရန်",
+        "lbl_email": "အီးမေးလ်", "lbl_pwd": "စကားဝှက်", "lbl_cpwd": "အတည်ပြုပါ",
+        "btn_login": "ဝင်မည်", "btn_reg": "ကာကွယ်မှု စတင်မည်",
         "err_login": "မှားယွင်းနေသည်။",
         "suc_reg": "အောင်မြင်ပါသည်။",
+        "or_connect": "ချိတ်ဆက်ပါ"
     }
 }
 
@@ -287,160 +293,9 @@ if 'auth' not in st.session_state: st.session_state.auth = False
 if 'cookies_accepted' not in st.session_state: st.session_state.cookies_accepted = False
 
 def set_page(name): st.session_state.page = name
+def handle_dev(): st.toast(T['dev_msg'], icon="🏗️")
 
-# --- 开发中功能反馈 (Toast) ---
-def handle_dev():
-    st.toast(T['dev_msg'], icon="🏗️")
-
-# --- 组件：大页脚 (Interactive Footer) ---
-def render_fat_footer():
-    st.write("")
-    st.markdown("---")
-    
-    c1, c2, c3, c4 = st.columns(4)
-    
-    with c1:
-        st.markdown(f"<div class='footer-title'>{T['f_comm']}</div>", unsafe_allow_html=True)
-        # 点击社交按钮显示开发中提示
-        if st.button("👾 Discord", use_container_width=True): handle_dev()
-        if st.button("🐦 Twitter / X", use_container_width=True): handle_dev()
-        if st.button("✈️ Telegram", use_container_width=True): handle_dev()
-
-    with c2:
-        st.markdown(f"<div class='footer-title'>{T['f_legal']}</div>", unsafe_allow_html=True)
-        if st.button("Terms (ToS)", key="ft1", use_container_width=True): 
-            st.session_state.view_legal = "tos"; set_page('legal_view'); st.rerun()
-        if st.button("No Refunds", key="ft2", use_container_width=True):
-            st.session_state.view_legal = "refund"; set_page('legal_view'); st.rerun()
-        if st.button("Privacy", key="ft3", use_container_width=True):
-            st.session_state.view_legal = "privacy"; set_page('legal_view'); st.rerun()
-
-    with c3:
-        st.markdown(f"<div class='footer-title'>{T['f_prod']}</div>", unsafe_allow_html=True)
-        # 修复死按钮：点击后弹出提示
-        if st.button("API Docs", use_container_width=True): handle_dev()
-        if st.button("Solana Scan", use_container_width=True): handle_dev()
-
-    with c4:
-        st.markdown(f"<div class='footer-title'>{T['f_serv']}</div>", unsafe_allow_html=True)
-        # 修复 SLA 按钮：点击后跳转查看
-        if st.button("SLA Guarantee", use_container_width=True):
-             st.session_state.view_legal = "sla"; set_page('legal_view'); st.rerun()
-        st.info("✉️ support@originguard.com")
-
-    st.markdown("<div style='text-align:center; color:#64748b; font-size:12px; margin-top:30px;'>© 2026 OriginGuard Solutions Inc.</div>", unsafe_allow_html=True)
-    
-    # Cookie Banner
-    if not st.session_state.cookies_accepted:
-        st.markdown(f"""
-        <div class="cookie-banner">
-            <span style="color:#fff; font-size:16px; margin-right:20px;">🍪 {T['cookie_msg']}</span>
-        </div>
-        """, unsafe_allow_html=True)
-        c_k1, c_k2, c_k3 = st.columns([1,1,1])
-        with c_k2:
-             if st.button(T['cookie_btn'], type="primary", use_container_width=True, key="cookie_accept"):
-                st.session_state.cookies_accepted = True
-                st.rerun()
-
-# --- 1. 官网首页 ---
-if st.session_state.page == 'landing':
-    st.write("")
-    st.markdown(f"""
-    <div style="text-align: center; padding: 60px 0;">
-        <h1 class="breathing-text" style="font-size: 64px; margin-bottom: 20px;">{T['slogan']}</h1>
-        <p class="breathing-text" style="font-size: 24px; color: #f8fafc; font-weight:600;">{T['sub_slogan']}</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    block_num = random.randint(245000000, 245999999)
-    st.markdown(f"<div style='text-align: center; margin-bottom: 40px; color:#FCD535; font-weight:bold;'>🟢 Solana Mainnet Block #{block_num}</div>", unsafe_allow_html=True)
-
-    c1, c2, c3 = st.columns([1, 1, 1])
-    with c2:
-        if st.button(T['btn_launch'], use_container_width=True, type="primary"):
-            set_page('login'); st.rerun()
-            
-    render_fat_footer()
-
-# --- 2. 身份网关 (Login/Register) ---
-elif st.session_state.page == 'login':
-    st.write("")
-    c1, c2, c3 = st.columns([1, 1, 1])
-    with c2:
-        # 使用 Tabs 实现注册/登录切换
-        tab_login, tab_reg = st.tabs([T['tab_login'], T['tab_reg']])
-        
-        # 登录 Tab
-        with tab_login:
-            pwd = st.text_input(T['lbl_email'], type="password", key="login_pwd", placeholder="origin2026")
-            if st.button(T['btn_login'], type="primary", use_container_width=True):
-                if pwd == "origin2026":
-                    with st.spinner("Verifying..."): time.sleep(1)
-                    st.session_state.auth = True; set_page('dashboard'); st.rerun()
-                else:
-                    st.error(T['err_login'])
-            
-            st.markdown("---")
-            if st.button("🇬 Google", use_container_width=True): handle_dev()
-            if st.button("🍎 Apple", use_container_width=True): handle_dev()
-
-        # 注册 Tab (模拟)
-        with tab_reg:
-            st.text_input("New Email", placeholder="user@example.com")
-            st.text_input(T['lbl_pwd'], type="password", key="reg_pwd")
-            st.text_input(T['lbl_cpwd'], type="password", key="reg_cpwd")
-            if st.button(T['btn_reg'], type="primary", use_container_width=True):
-                with st.spinner("Creating Account on Blockchain..."):
-                    time.sleep(2)
-                st.success(T['suc_reg'])
-                time.sleep(1)
-                st.rerun() # 刷新回到默认登录
-
-        st.write("")
-        if st.button("⬅️ Back", use_container_width=True): set_page('landing'); st.rerun()
-        
-    render_fat_footer()
-
-# --- 3. 控制台 ---
-elif st.session_state.page == 'dashboard':
-    if not st.session_state.auth: set_page('login'); st.rerun()
-    
-    with st.sidebar:
-        st.success("🟢 CEO: MNNO")
-        if st.button("Log Out"): st.session_state.auth=False; set_page('landing'); st.rerun()
-
-    st.title("📊 Dashboard")
-    k1, k2, k3, k4 = st.columns(4)
-    k1.metric("Assets", "1,248")
-    k2.metric("Threats", "53", "High", delta_color="inverse")
-    k3.metric("Legal", "41")
-    k4.metric("Saved", "$12,400")
-    
-    st.markdown("---")
-    t1, t2 = st.tabs(["🛡️ Protect", "⚖️ Legal Hammer"])
-    with t1:
-        st.file_uploader("Upload Image", type=['png','jpg'])
-        if st.button("Encrypt", type="primary"): handle_dev()
-    with t2:
-        st.text_input("Infringing URL")
-        if st.button("Send Notice", type="primary"): handle_dev()
-
-    render_fat_footer()
-
-# --- 4. 法律详情页 ---
-elif st.session_state.page == 'legal_view':
-    st.button("⬅️ Back", on_click=lambda: set_page('landing'))
-    st.markdown("---")
-    
-    key = st.session_state.get('view_legal', 'tos')
-    content = L_TEXT.get(key, "Error")
-    
-    # 纯黑容器 + 金色标题 + 白字
-    st.markdown(f"""
-    <div class="legal-box">
-        {content}
-    </div>
-    """, unsafe_allow_html=True)
-    
-    render_fat_footer()
+# --- SVG 图标库 (Real Logos) ---
+# Footer Icons
+SVG_DISCORD = """<svg viewBox="0 0 127.14 96.36" width="20"><path fill="white" d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.11,77.11,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.89,105.89,0,0,0,126.6,80.22c2.36-24.44-5.42-48.18-18.9-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>"""
+SVG_TWITTER = """<svg viewBox="0 0 24 24" width="20"><path fill="white" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8

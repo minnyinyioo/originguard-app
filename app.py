@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 import random
 import time
-import requests # 新增：用于请求真实区块链数据
+import requests
 
 # ==========================================
 # 1. 核心配置 (Core Config)
@@ -94,13 +94,13 @@ Blockchain ငွေပေးချေမှုများသည် ပြင�
 }
 
 # ==========================================
-# 3. 动态 CSS (V4.6: 极速视觉引擎)
+# 3. 动态 CSS (V4.7: 全栈布局 + 肌肉填充)
 # ==========================================
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&family=Padauk:wght@400;700&family=Noto+Sans+Myanmar:wght@400;700&display=swap');
 
-    /* 1. 背景动画：风暴级星尘 (Hyper Stardust) */
+    /* 1. 背景动画：风暴级星尘 */
     @keyframes move-background {
         from {transform: translate3d(0px, -200px, 0px);}
         to {transform: translate3d(0px, 800px, 0px);}
@@ -115,7 +115,7 @@ st.markdown("""
         background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #020617 90%);
         color: #ffffff !important; 
         font-family: 'Inter', 'Padauk', 'Noto Sans Myanmar', sans-serif !important;
-        animation: nebula-pulse 10s ease-in-out infinite; /* 背景也在缓慢呼吸 */
+        animation: nebula-pulse 10s ease-in-out infinite;
     }
     .stApp::before {
         content: "";
@@ -128,16 +128,16 @@ st.markdown("""
             radial-gradient(3px 3px at 100px 50px, #22d3ee, transparent),
             radial-gradient(4px 4px at 300px 450px, #818cf8, transparent),
             radial-gradient(2px 2px at 600px 100px, #ffffff, transparent),
-            radial-gradient(3px 3px at 800px 300px, #FCD535, transparent); /* 增加金色粒子 */
+            radial-gradient(3px 3px at 800px 300px, #FCD535, transparent);
         background-size: 800px 800px;
-        animation: move-background 15s linear infinite; /* 速度提升 */
-        opacity: 0.7; /* 亮度提升 */
+        animation: move-background 15s linear infinite;
+        opacity: 0.7;
         z-index: 0;
         pointer-events: none;
     }
 
-    /* 2. 法律条款专用容器 */
-    .legal-box {
+    /* 2. 法律条款/核心功能卡片专用容器 (统一黑底风格) */
+    .legal-box, .feature-card {
         background-color: #000000 !important;
         border: 1px solid #333;
         padding: 25px;
@@ -149,16 +149,28 @@ st.markdown("""
         margin-bottom: 20px;
         position: relative;
         z-index: 2;
+        transition: transform 0.3s;
     }
-    .legal-box h3 { color: #FCD535 !important; margin-top: 0; font-size: 20px; }
+    .feature-card:hover {
+        transform: translateY(-5px);
+        border-color: #22d3ee;
+        box-shadow: 0 0 20px rgba(34, 211, 238, 0.2);
+    }
+    .legal-box h3, .feature-card h3 { 
+        color: #FCD535 !important; 
+        margin-top: 0; 
+        font-size: 20px; 
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
 
-    /* 3. 按钮脉冲特效 (Violent Pulse) */
+    /* 3. 按钮脉冲特效 */
     @keyframes pulse-intense {
         0% { box-shadow: 0 0 0 0 rgba(252, 213, 53, 0.7); transform: scale(1); }
         50% { box-shadow: 0 0 20px 10px rgba(252, 213, 53, 0); transform: scale(1.03); }
         100% { box-shadow: 0 0 0 0 rgba(252, 213, 53, 0); transform: scale(1); }
     }
-    /* Primary (Binance Yellow) */
+    /* Primary */
     button[kind="primary"] {
         background: linear-gradient(90deg, #FCD535 0%, #FBC100 100%) !important;
         color: #1e2329 !important;
@@ -171,11 +183,11 @@ st.markdown("""
         z-index: 5;
     }
     button[kind="primary"]:hover {
-        animation: pulse-intense 1s infinite; /* 剧烈脉冲 */
+        animation: pulse-intense 1s infinite;
     }
-    /* Secondary (Glass) */
+    /* Secondary */
     div.stButton > button:not([kind="primary"]) {
-        background-color: rgba(15, 23, 42, 0.8) !important; /* 加深背景防雪盲 */
+        background-color: rgba(15, 23, 42, 0.8) !important;
         color: #e2e8f0 !important;
         border: 1px solid rgba(148, 163, 184, 0.4) !important;
         border-radius: 6px;
@@ -188,7 +200,7 @@ st.markdown("""
         box-shadow: 0 0 15px rgba(252, 213, 53, 0.3);
     }
 
-    /* 4. Auth Card (首页悬浮登录框) */
+    /* 4. Auth Card */
     .auth-card {
         background: rgba(15, 23, 42, 0.85);
         backdrop-filter: blur(25px);
@@ -201,7 +213,7 @@ st.markdown("""
         z-index: 5;
     }
 
-    /* 5. 真实 Logo 按钮 hack */
+    /* 5. 真实 Logo 按钮 */
     .real-logo-btn {
         display: flex; align-items: center; justify-content: center; gap: 10px;
         width: 100%; padding: 10px; border-radius: 8px; font-weight: 600;
@@ -215,7 +227,7 @@ st.markdown("""
     /* 6. Footer Title */
     .footer-title { color: #FCD535; font-weight: 700; font-size: 14px; margin-bottom: 10px; text-transform: uppercase; text-shadow: 0 0 10px rgba(252, 213, 53, 0.3); }
     
-    /* 7. Breathing Text (Enhanced) */
+    /* 7. Breathing Text */
     @keyframes breathe-deep {
         0% { opacity: 0.9; text-shadow: 0 0 10px rgba(34, 211, 238, 0.2); transform: translateY(0); }
         50% { opacity: 1; text-shadow: 0 0 30px rgba(34, 211, 238, 0.8); transform: translateY(-3px); }
@@ -226,7 +238,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 4. 语言字典
+# 4. 语言字典 (已补全核心技术文案)
 # ==========================================
 TRANS = {
     "English": {
@@ -243,7 +255,12 @@ TRANS = {
         "btn_login": "Sign In", "btn_reg": "Start Your Originality Protection Journey",
         "err_login": "Invalid Credentials. Try 'origin2026'.",
         "suc_reg": "Account created! Please log in.",
-        "or_connect": "OR CONNECT WITH"
+        "or_connect": "OR CONNECT WITH",
+        # Core Features (Refill)
+        "core_title": "Core Defense Matrix",
+        "c1_t": "Invisible DNA", "c1_d": "AI-embedded watermarks immune to cropping and compression.",
+        "c2_t": "On-Chain Truth", "c2_d": "Immutable Solana certificates providing permanent proof of ownership.",
+        "c3_t": "Legal Hammer", "c3_d": "Automated DMCA takedown notices generated in milliseconds."
     },
     "中文": {
         "slogan": "保护你的原创作品视频照片等",
@@ -259,7 +276,12 @@ TRANS = {
         "btn_login": "立即登录", "btn_reg": "开启您的原创保护之旅",
         "err_login": "凭证错误。演示密码为 'origin2026'。",
         "suc_reg": "账户创建成功！请登录。",
-        "or_connect": "或通过以下方式连接"
+        "or_connect": "或通过以下方式连接",
+        # Core Features
+        "core_title": "核心防御矩阵",
+        "c1_t": "隐形 DNA", "c1_d": "免疫裁剪和压缩的 AI 隐形水印，删不掉的数字指纹。",
+        "c2_t": "链上真理", "c2_d": "Solana 链上永久存证，生成不可篡改的法律权属证书。",
+        "c3_t": "AI 法律重锤", "c3_d": "毫秒级生成跨国 DMCA 律师函，自动打击侵权行为。"
     },
     "Myanmar": {
         "slogan": "ဖန်တီးမှုများကို ကာကွယ်ပါ",
@@ -275,12 +297,17 @@ TRANS = {
         "btn_login": "ဝင်မည်", "btn_reg": "ကာကွယ်မှု စတင်မည်",
         "err_login": "မှားယွင်းနေသည်။",
         "suc_reg": "အောင်မြင်ပါသည်။",
-        "or_connect": "ချိတ်ဆက်ပါ"
+        "or_connect": "ချိတ်ဆက်ပါ",
+        # Core Features
+        "core_title": "အဓိက နည်းပညာများ",
+        "c1_t": "မမြင်ရသော ရေစာ", "c1_d": "AI နည်းပညာဖြင့် ပုံရိပ်ထဲတွင် မြှုပ်နှံထားသည်။",
+        "c2_t": "Blockchain သက်သေ", "c2_d": "Solana ပေါ်တွင် ဖျက်၍မရသော မှတ်တမ်း။",
+        "c3_t": "AI ဥပဒေ လက်နက်", "c3_d": "DMCA တိုင်ကြားစာ အလိုအလျောက် ပေးပို့ခြင်း။"
     }
 }
 
 # ==========================================
-# 5. 逻辑控制 & 真实区块链连接
+# 5. 逻辑控制 & RPC
 # ==========================================
 lang_choice = st.sidebar.selectbox("🌐 Language", ["English", "中文", "Myanmar"], index=1)
 T = TRANS[lang_choice]
@@ -293,28 +320,18 @@ if 'cookies_accepted' not in st.session_state: st.session_state.cookies_accepted
 def set_page(name): st.session_state.page = name
 def handle_dev(): st.toast(T['dev_msg'], icon="🏗️")
 
-# --- 🚀 功能：获取真实 Solana 区块高度 ---
-@st.cache_data(ttl=10) # 缓存10秒，防止刷新太快被 API 封禁
+@st.cache_data(ttl=10)
 def get_real_solana_block():
     try:
-        # 使用 Solana 公共 RPC 节点
         url = "https://api.mainnet-beta.solana.com"
         headers = {"Content-Type": "application/json"}
-        payload = {
-            "jsonrpc": "2.0",
-            "id": 1,
-            "method": "getSlot"
-        }
+        payload = {"jsonrpc": "2.0", "id": 1, "method": "getSlot"}
         response = requests.post(url, json=payload, headers=headers, timeout=2)
-        if response.status_code == 200:
-            block = response.json().get("result")
-            return f"{block:,}" # 添加千位分隔符
-    except:
-        pass
-    # 如果获取失败（超时或被限流），返回一个带标记的估算值，保证界面不崩
+        if response.status_code == 200: return f"{response.json().get('result'):,}"
+    except: pass
     return f"{random.randint(246000000, 247000000):,} (Est)"
 
-# --- SVG 图标库 (Real Logos) ---
+# --- SVG Icons ---
 SVG_DISCORD = """<svg viewBox="0 0 127.14 96.36" width="20"><path fill="white" d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.11,77.11,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.89,105.89,0,0,0,126.6,80.22c2.36-24.44-5.42-48.18-18.9-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>"""
 SVG_TWITTER = """<svg viewBox="0 0 24 24" width="20"><path fill="white" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>"""
 SVG_TELEGRAM = """<svg viewBox="0 0 24 24" width="20"><path fill="white" d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>"""
@@ -324,23 +341,21 @@ SVG_GOOGLE = """<svg width="18" height="18" viewBox="0 0 18 18"><path fill="#428
 SVG_APPLE = """<svg width="18" height="18" viewBox="0 0 384 512" style="fill:white"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 52.3-11.4 69.5-34.3z"/></svg>"""
 SVG_GITHUB = """<svg width="18" height="18" viewBox="0 0 1024 1024" style="fill:white"><path d="M511.6 76.3C264.3 76.2 64 276.4 64 523.5 64 718.9 189.3 885 363.8 946c23.5 5.9 19.9-10.8 19.9-22.2v-77.5c-135.7 15.9-141.2-73.9-150.3-88.9C215 726 171.5 718 184.5 703c30.9-15.9 62.4 4 98.9 57.9 26.4 39.1 77.9 32.5 104 26 5.7-23.5 17.9-44.5 34.7-60.8-140.6-25.2-199.2-111-199.2-213 0-49.5 16.3-95 48.3-131.7-20.4-60.5 1.9-112.3 4.9-120 58.1-5.2 118.5 41.6 123.2 45.3 33-8.9 70.7-13.6 112.9-13.6 42.4 0 80.2 4.9 113.5 13.9 11.3-8.6 67.3-48.8 121.3-43.9 2.9 7.7 24.7 58.3 5.5 118 32.4 36.8 48.9 82.7 48.9 132.3 0 102.2-59 188.1-200 212.9a127.5 127.5 0 0 1 38.1 91v112.5c.8 9 0 17.9 15 17.9 177.1-59.7 304.6-227 304.6-424.1 0-247.2-200.4-447.3-447.5-447.3z"/></svg>"""
 
-# --- 组件：大页脚 ---
+# --- Footer ---
 def render_fat_footer():
     st.write("")
     st.markdown("---")
-    
     c1, c2, c3, c4 = st.columns(4)
     
     with c1:
         st.markdown(f"<div class='footer-title'>{T['f_comm']}</div>", unsafe_allow_html=True)
-        # 5大社区矩阵
         st.markdown(f"""
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button onclick="alert('Join Discord')" style="background:none; border:none; cursor:pointer;" title="Discord">{SVG_DISCORD}</button>
-            <button onclick="alert('Follow X')" style="background:none; border:none; cursor:pointer;" title="Twitter/X">{SVG_TWITTER}</button>
-            <button onclick="alert('Join TG')" style="background:none; border:none; cursor:pointer;" title="Telegram">{SVG_TELEGRAM}</button>
-            <button onclick="alert('Join FB')" style="background:none; border:none; cursor:pointer;" title="Facebook">{SVG_FACEBOOK}</button>
-            <button onclick="alert('Star GitHub')" style="background:none; border:none; cursor:pointer;" title="GitHub">{SVG_GITHUB_FOOTER}</button>
+            <button onclick="alert('Discord')" style="background:none; border:none; cursor:pointer;">{SVG_DISCORD}</button>
+            <button onclick="alert('X')" style="background:none; border:none; cursor:pointer;">{SVG_TWITTER}</button>
+            <button onclick="alert('Telegram')" style="background:none; border:none; cursor:pointer;">{SVG_TELEGRAM}</button>
+            <button onclick="alert('Facebook')" style="background:none; border:none; cursor:pointer;">{SVG_FACEBOOK}</button>
+            <button onclick="alert('GitHub')" style="background:none; border:none; cursor:pointer;">{SVG_GITHUB_FOOTER}</button>
         </div>
         """, unsafe_allow_html=True)
 
@@ -355,7 +370,6 @@ def render_fat_footer():
 
     with c3:
         st.markdown(f"<div class='footer-title'>{T['f_prod']}</div>", unsafe_allow_html=True)
-        # Solana Scan: 现在是真实的外部链接
         st.link_button("🔗 Solana Scan", "https://solscan.io/", use_container_width=True)
         if st.button("API Docs", use_container_width=True): handle_dev()
 
@@ -367,89 +381,73 @@ def render_fat_footer():
 
     st.markdown("<div style='text-align:center; color:#64748b; font-size:12px; margin-top:30px;'>© 2026 OriginGuard Solutions Inc.</div>", unsafe_allow_html=True)
     
-    # Cookie Banner
     if not st.session_state.cookies_accepted:
-        st.markdown(f"""
-        <div class="cookie-banner">
-            <span style="color:#fff; font-size:16px; margin-right:20px;">🍪 {T['cookie_msg']}</span>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"""<div class="cookie-banner"><span style="color:#fff; font-size:16px; margin-right:20px;">🍪 {T['cookie_msg']}</span></div>""", unsafe_allow_html=True)
         c_k1, c_k2, c_k3 = st.columns([1,1,1])
         with c_k2:
              if st.button(T['cookie_btn'], type="primary", use_container_width=True, key="cookie_accept"):
-                st.session_state.cookies_accepted = True
-                st.rerun()
+                st.session_state.cookies_accepted = True; st.rerun()
 
-# --- 1. 官网首页 (Landing) + 身份网关 (Direct) ---
+# --- 1. Landing + Auth + Core Features (Refill) ---
 if st.session_state.page == 'landing':
     st.write("")
     
+    # 1.1 Hero Section
     col_text, col_auth = st.columns([1.2, 0.8])
-    
     with col_text:
-        st.write("")
-        st.write("")
+        st.write(""); st.write("")
         st.markdown(f"""
         <div style="padding-right: 20px;">
             <h1 class="breathing-text" style="font-size: 56px; margin-bottom: 20px;">{T['slogan']}</h1>
             <p class="breathing-text" style="font-size: 22px; color: #f8fafc; font-weight:600; line-height:1.5;">{T['sub_slogan']}</p>
         </div>
         """, unsafe_allow_html=True)
-        
-        # 真实区块高度获取
         real_block = get_real_solana_block()
         st.markdown(f"<div style='margin-top: 40px; color:#FCD535; font-weight:bold;'>🟢 Solana Mainnet Slot: #{real_block}</div>", unsafe_allow_html=True)
 
     with col_auth:
         st.markdown('<div class="auth-card">', unsafe_allow_html=True)
         tab_login, tab_reg = st.tabs([T['tab_login'], T['tab_reg']])
-        
-        # 登录逻辑
         with tab_login:
             pwd = st.text_input(T['lbl_email'], type="password", key="login_pwd", placeholder="origin2026")
             if st.button(T['btn_login'], type="primary", use_container_width=True):
                 if pwd == "origin2026":
                     with st.spinner("Verifying..."): time.sleep(1)
                     st.session_state.auth = True; set_page('dashboard'); st.rerun()
-                else:
-                    st.error(T['err_login'])
-            
+                else: st.error(T['err_login'])
             st.markdown(f"<div style='text-align:center; color:#94a3b8; font-size:12px; margin:15px 0;'>{T['or_connect']}</div>", unsafe_allow_html=True)
-            st.markdown(f"""
-            <a href="#" class="real-logo-btn btn-google">{SVG_GOOGLE} Continue with Google</a>
-            <a href="#" class="real-logo-btn btn-apple">{SVG_APPLE} Continue with Apple</a>
-            <a href="#" class="real-logo-btn btn-github">{SVG_GITHUB} Continue with GitHub</a>
-            """, unsafe_allow_html=True)
-
-        # 注册逻辑
+            st.markdown(f"""<a href="#" class="real-logo-btn btn-google">{SVG_GOOGLE} Continue with Google</a><a href="#" class="real-logo-btn btn-apple">{SVG_APPLE} Continue with Apple</a><a href="#" class="real-logo-btn btn-github">{SVG_GITHUB} Continue with GitHub</a>""", unsafe_allow_html=True)
         with tab_reg:
             st.text_input("Email", placeholder="user@example.com")
             st.text_input(T['lbl_pwd'], type="password", key="reg_pwd")
             st.text_input(T['lbl_cpwd'], type="password", key="reg_cpwd")
             if st.button(T['btn_reg'], type="primary", use_container_width=True):
                 with st.spinner("Creating Identity..."): time.sleep(2)
-                st.success(T['suc_reg'])
-                time.sleep(1); st.rerun()
-
+                st.success(T['suc_reg']); time.sleep(1); st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
+
+    # 1.2 Core Features (Fixing the Empty Space)
+    st.write(""); st.write(""); st.markdown("---")
+    st.subheader(T['core_title'])
+    fc1, fc2, fc3 = st.columns(3)
+    with fc1:
+        st.markdown(f"""<div class="feature-card"><h3>👁️ {T['c1_t']}</h3><p>{T['c1_d']}</p></div>""", unsafe_allow_html=True)
+    with fc2:
+        st.markdown(f"""<div class="feature-card"><h3>⛓️ {T['c2_t']}</h3><p>{T['c2_d']}</p></div>""", unsafe_allow_html=True)
+    with fc3:
+        st.markdown(f"""<div class="feature-card"><h3>⚖️ {T['c3_t']}</h3><p>{T['c3_d']}</p></div>""", unsafe_allow_html=True)
 
     render_fat_footer()
 
-# --- 2. 控制台 (Dashboard) ---
+# --- 2. Dashboard ---
 elif st.session_state.page == 'dashboard':
     if not st.session_state.auth: set_page('landing'); st.rerun()
-    
     with st.sidebar:
         st.success("🟢 CEO: MNNO")
         if st.button("Log Out"): st.session_state.auth=False; set_page('landing'); st.rerun()
-
     st.title("📊 Dashboard")
     k1, k2, k3, k4 = st.columns(4)
-    k1.metric("Assets", "1,248")
-    k2.metric("Threats", "53", "High", delta_color="inverse")
-    k3.metric("Legal", "41")
-    k4.metric("Saved", "$12,400")
-    
+    k1.metric("Assets", "1,248"); k2.metric("Threats", "53", "High", delta_color="inverse"); k3.metric("Legal", "41"); k4.metric("Saved", "$12,400")
     st.markdown("---")
     t1, t2 = st.tabs(["🛡️ Protect", "⚖️ Legal Hammer"])
     with t1:
@@ -458,21 +456,13 @@ elif st.session_state.page == 'dashboard':
     with t2:
         st.text_input("Infringing URL")
         if st.button("Send Notice", type="primary"): handle_dev()
-
     render_fat_footer()
 
-# --- 3. 法律详情页 ---
+# --- 3. Legal View ---
 elif st.session_state.page == 'legal_view':
     st.button("⬅️ Back", on_click=lambda: set_page('landing'))
     st.markdown("---")
-    
     key = st.session_state.get('view_legal', 'tos')
     content = L_TEXT.get(key, "Error")
-    
-    st.markdown(f"""
-    <div class="legal-box">
-        {content}
-    </div>
-    """, unsafe_allow_html=True)
-    
+    st.markdown(f"""<div class="legal-box">{content}</div>""", unsafe_allow_html=True)
     render_fat_footer()

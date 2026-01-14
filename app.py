@@ -86,7 +86,7 @@ Blockchain ငွေပေးချေမှုများသည် ပြင�
 }
 
 # ==========================================
-# 3. 动态 CSS (V4.2: 高对比度 + 真实组件)
+# 3. 动态 CSS (V4.3: 脉冲交互 + 呼吸波动)
 # ==========================================
 st.markdown("""
 <style>
@@ -121,7 +121,7 @@ st.markdown("""
         pointer-events: none;
     }
 
-    /* 2. 法律条款专用容器 (黑底白字，强制覆盖) */
+    /* 2. 法律条款专用容器 (黑底白字) */
     .legal-box {
         background-color: #000000 !important;
         border: 1px solid #333;
@@ -134,33 +134,57 @@ st.markdown("""
         margin-bottom: 20px;
     }
     .legal-box h3 {
-        color: #FCD535 !important; /* 金色标题 */
+        color: #FCD535 !important;
         margin-top: 0;
         font-size: 20px;
     }
 
-    /* 3. 按钮样式重构 */
+    /* 3. 按钮脉冲特效 (Tech Pulse) */
+    @keyframes pulse-yellow {
+        0% { box-shadow: 0 0 0 0 rgba(252, 213, 53, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(252, 213, 53, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(252, 213, 53, 0); }
+    }
+
     /* Primary (Binance Yellow) */
     button[kind="primary"] {
         background: linear-gradient(90deg, #FCD535 0%, #FBC100 100%) !important;
         color: #1e2329 !important;
         border: none !important;
         font-weight: 800 !important;
+        transition: all 0.3s;
     }
-    /* Secondary (Glass - Footer) */
+    button[kind="primary"]:hover {
+        transform: scale(1.05);
+        animation: pulse-yellow 1.5s infinite; /* 悬停时产生脉冲波动 */
+    }
+
+    /* Secondary (Glass) */
     div.stButton > button:not([kind="primary"]) {
         background-color: rgba(30, 41, 59, 0.6) !important;
         color: #e2e8f0 !important;
         border: 1px solid rgba(148, 163, 184, 0.3) !important;
         border-radius: 6px;
+        transition: all 0.3s;
     }
     div.stButton > button:not([kind="primary"]):hover {
         border-color: #FCD535 !important;
         color: #fff !important;
         background-color: rgba(30, 41, 59, 1) !important;
+        transform: translateY(-2px);
     }
 
-    /* 4. Cookie 弹窗 (Binance Style) */
+    /* 4. 字体呼吸波动 (Breathing Text) */
+    @keyframes breathe {
+        0% { opacity: 0.8; text-shadow: 0 0 5px rgba(255,255,255,0.1); }
+        50% { opacity: 1; text-shadow: 0 0 20px rgba(34, 211, 238, 0.5); }
+        100% { opacity: 0.8; text-shadow: 0 0 5px rgba(255,255,255,0.1); }
+    }
+    .breathing-text {
+        animation: breathe 3s ease-in-out infinite;
+    }
+
+    /* 5. Cookie 弹窗 */
     .cookie-banner {
         position: fixed;
         bottom: 0;
@@ -176,7 +200,7 @@ st.markdown("""
         box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
     }
     
-    /* 5. 页脚标题 */
+    /* 6. 页脚标题 */
     .footer-title {
         color: #FCD535;
         font-weight: 700;
@@ -184,6 +208,15 @@ st.markdown("""
         margin-bottom: 10px;
         text-transform: uppercase;
         letter-spacing: 1px;
+    }
+    
+    /* 7. Tabs 样式优化 (登录/注册) */
+    div[data-testid="stTabs"] button {
+        color: #cbd5e1;
+    }
+    div[data-testid="stTabs"] button[aria-selected="true"] {
+        color: #FCD535;
+        border-bottom-color: #FCD535;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -199,8 +232,14 @@ TRANS = {
         "cookie_msg": "We use cookies to ensure asset security. By continuing, you agree to our Terms.",
         "cookie_btn": "Accept & Continue",
         "f_comm": "Community", "f_legal": "Legal", "f_prod": "Products", "f_serv": "Support",
-        "login_title": "Sign In", "login_email": "Access Code", "login_btn": "Verify & Enter", "login_error": "Invalid Code.",
-        "titles": ["Terms", "Refund", "Privacy", "SLA", "Disclaimer"]
+        "titles": ["Terms", "Refund", "Privacy", "SLA", "Disclaimer"],
+        "dev_msg": "🚧 Feature currently under active development.",
+        # Auth
+        "tab_login": "Sign In", "tab_reg": "Create Account",
+        "lbl_email": "Email / Access Code", "lbl_pwd": "Password", "lbl_cpwd": "Confirm Password",
+        "btn_login": "Login", "btn_reg": "Register New Account",
+        "err_login": "Invalid Credentials. Try 'origin2026'.",
+        "suc_reg": "Account created successfully! Redirecting to login...",
     },
     "中文": {
         "slogan": "捍卫你的数字资产",
@@ -209,8 +248,14 @@ TRANS = {
         "cookie_msg": "我们使用 Cookie 保障您的资产安全。继续使用即表示您同意我们的条款。",
         "cookie_btn": "接受并继续",
         "f_comm": "官方社区", "f_legal": "法律条款", "f_prod": "产品中心", "f_serv": "客户支持",
-        "login_title": "登录", "login_email": "访问密钥", "login_btn": "验证并进入", "login_error": "密钥错误。",
-        "titles": ["服务条款", "无退款政策", "隐私政策", "SLA承诺", "免责声明"]
+        "titles": ["服务条款", "无退款政策", "隐私政策", "SLA承诺", "免责声明"],
+        "dev_msg": "🚧 该功能正在紧急开发中，敬请期待。",
+        # Auth
+        "tab_login": "登录", "tab_reg": "注册账户",
+        "lbl_email": "邮箱 / 访问密钥", "lbl_pwd": "密码", "lbl_cpwd": "确认密码",
+        "btn_login": "立即登录", "btn_reg": "注册新账户",
+        "err_login": "凭证错误。演示密码为 'origin2026'。",
+        "suc_reg": "账户创建成功！正在跳转登录...",
     },
     "Myanmar": {
         "slogan": "ဖန်တီးမှုများကို ကာကွယ်ပါ",
@@ -219,8 +264,14 @@ TRANS = {
         "cookie_msg": "သင့်လုံခြုံရေးအတွက် Cookie အသုံးပြုပါသည်။",
         "cookie_btn": "လက်ခံမည်",
         "f_comm": "ကွန်မြူနတီ", "f_legal": "ဥပဒေ", "f_prod": "ထုတ်ကုန်များ", "f_serv": "ဝန်ဆောင်မှု",
-        "login_title": "အကောင့်ဝင်ပါ", "login_email": "စကားဝှက်", "login_btn": "ဝင်မည်", "login_error": "မှားယွင်းနေသည်။",
-        "titles": ["စည်းမျဉ်းများ", "ငွေပြန်မအမ်းပါ", "လုံခြုံရေး", "SLA", "ငြင်းဆိုချက်"]
+        "titles": ["စည်းမျဉ်းများ", "ငွေပြန်မအမ်းပါ", "လုံခြုံရေး", "SLA", "ငြင်းဆိုချက်"],
+        "dev_msg": "🚧 တည်ဆောက်ဆဲဖြစ်သည်",
+        # Auth
+        "tab_login": "အကောင့်ဝင်ရန်", "tab_reg": "အကောင့်သစ်ဖွင့်ရန်",
+        "lbl_email": "အီးမေးလ်", "lbl_pwd": "စကားဝှက်", "lbl_cpwd": "စကားဝှက် အတည်ပြုပါ",
+        "btn_login": "ဝင်မည်", "btn_reg": "စာရင်းသွင်းမည်",
+        "err_login": "မှားယွင်းနေသည်။",
+        "suc_reg": "အောင်မြင်ပါသည်။",
     }
 }
 
@@ -237,7 +288,11 @@ if 'cookies_accepted' not in st.session_state: st.session_state.cookies_accepted
 
 def set_page(name): st.session_state.page = name
 
-# --- 组件：大页脚 (Binance Style) ---
+# --- 开发中功能反馈 (Toast) ---
+def handle_dev():
+    st.toast(T['dev_msg'], icon="🏗️")
+
+# --- 组件：大页脚 (Interactive Footer) ---
 def render_fat_footer():
     st.write("")
     st.markdown("---")
@@ -246,13 +301,13 @@ def render_fat_footer():
     
     with c1:
         st.markdown(f"<div class='footer-title'>{T['f_comm']}</div>", unsafe_allow_html=True)
-        st.button("👾 Discord", use_container_width=True)
-        st.button("🐦 Twitter / X", use_container_width=True)
-        st.button("✈️ Telegram", use_container_width=True)
+        # 点击社交按钮显示开发中提示
+        if st.button("👾 Discord", use_container_width=True): handle_dev()
+        if st.button("🐦 Twitter / X", use_container_width=True): handle_dev()
+        if st.button("✈️ Telegram", use_container_width=True): handle_dev()
 
     with c2:
         st.markdown(f"<div class='footer-title'>{T['f_legal']}</div>", unsafe_allow_html=True)
-        # 点击法律按钮，跳转到 legal_view
         if st.button("Terms (ToS)", key="ft1", use_container_width=True): 
             st.session_state.view_legal = "tos"; set_page('legal_view'); st.rerun()
         if st.button("No Refunds", key="ft2", use_container_width=True):
@@ -262,12 +317,15 @@ def render_fat_footer():
 
     with c3:
         st.markdown(f"<div class='footer-title'>{T['f_prod']}</div>", unsafe_allow_html=True)
-        st.button("API Docs", disabled=True, use_container_width=True)
-        st.button("Solana Scan", disabled=True, use_container_width=True)
+        # 修复死按钮：点击后弹出提示
+        if st.button("API Docs", use_container_width=True): handle_dev()
+        if st.button("Solana Scan", use_container_width=True): handle_dev()
 
     with c4:
         st.markdown(f"<div class='footer-title'>{T['f_serv']}</div>", unsafe_allow_html=True)
-        st.button("SLA Guarantee", use_container_width=True)
+        # 修复 SLA 按钮：点击后跳转查看
+        if st.button("SLA Guarantee", use_container_width=True):
+             st.session_state.view_legal = "sla"; set_page('legal_view'); st.rerun()
         st.info("✉️ support@originguard.com")
 
     st.markdown("<div style='text-align:center; color:#64748b; font-size:12px; margin-top:30px;'>© 2026 OriginGuard Solutions Inc.</div>", unsafe_allow_html=True)
@@ -279,7 +337,6 @@ def render_fat_footer():
             <span style="color:#fff; font-size:16px; margin-right:20px;">🍪 {T['cookie_msg']}</span>
         </div>
         """, unsafe_allow_html=True)
-        # 按钮在 Streamlit 布局中渲染
         c_k1, c_k2, c_k3 = st.columns([1,1,1])
         with c_k2:
              if st.button(T['cookie_btn'], type="primary", use_container_width=True, key="cookie_accept"):
@@ -291,8 +348,8 @@ if st.session_state.page == 'landing':
     st.write("")
     st.markdown(f"""
     <div style="text-align: center; padding: 60px 0;">
-        <h1 style="font-size: 64px; margin-bottom: 20px;">{T['slogan']}</h1>
-        <p style="font-size: 24px; color: #f8fafc; font-weight:600;">{T['sub_slogan']}</p>
+        <h1 class="breathing-text" style="font-size: 64px; margin-bottom: 20px;">{T['slogan']}</h1>
+        <p class="breathing-text" style="font-size: 24px; color: #f8fafc; font-weight:600;">{T['sub_slogan']}</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -306,23 +363,41 @@ if st.session_state.page == 'landing':
             
     render_fat_footer()
 
-# --- 2. 真实登录页 ---
+# --- 2. 身份网关 (Login/Register) ---
 elif st.session_state.page == 'login':
     st.write("")
     c1, c2, c3 = st.columns([1, 1, 1])
     with c2:
-        st.markdown(f"## {T['login_title']}")
-        pwd = st.text_input(T['login_email'], type="password")
-        if st.button(T['login_btn'], type="primary", use_container_width=True):
-            if pwd == "origin2026":
-                with st.spinner("Connecting..."): time.sleep(1)
-                st.session_state.auth = True; set_page('dashboard'); st.rerun()
-            else:
-                st.error(T['login_error'])
+        # 使用 Tabs 实现注册/登录切换
+        tab_login, tab_reg = st.tabs([T['tab_login'], T['tab_reg']])
         
-        st.markdown("---")
-        st.button("🇬 Google", use_container_width=True)
-        st.button("🍎 Apple", use_container_width=True)
+        # 登录 Tab
+        with tab_login:
+            pwd = st.text_input(T['lbl_email'], type="password", key="login_pwd", placeholder="origin2026")
+            if st.button(T['btn_login'], type="primary", use_container_width=True):
+                if pwd == "origin2026":
+                    with st.spinner("Verifying..."): time.sleep(1)
+                    st.session_state.auth = True; set_page('dashboard'); st.rerun()
+                else:
+                    st.error(T['err_login'])
+            
+            st.markdown("---")
+            if st.button("🇬 Google", use_container_width=True): handle_dev()
+            if st.button("🍎 Apple", use_container_width=True): handle_dev()
+
+        # 注册 Tab (模拟)
+        with tab_reg:
+            st.text_input("New Email", placeholder="user@example.com")
+            st.text_input(T['lbl_pwd'], type="password", key="reg_pwd")
+            st.text_input(T['lbl_cpwd'], type="password", key="reg_cpwd")
+            if st.button(T['btn_reg'], type="primary", use_container_width=True):
+                with st.spinner("Creating Account on Blockchain..."):
+                    time.sleep(2)
+                st.success(T['suc_reg'])
+                time.sleep(1)
+                st.rerun() # 刷新回到默认登录
+
+        st.write("")
         if st.button("⬅️ Back", use_container_width=True): set_page('landing'); st.rerun()
         
     render_fat_footer()
@@ -346,14 +421,14 @@ elif st.session_state.page == 'dashboard':
     t1, t2 = st.tabs(["🛡️ Protect", "⚖️ Legal Hammer"])
     with t1:
         st.file_uploader("Upload Image", type=['png','jpg'])
-        st.button("Encrypt", type="primary")
+        if st.button("Encrypt", type="primary"): handle_dev()
     with t2:
         st.text_input("Infringing URL")
-        st.button("Send Notice", type="primary")
+        if st.button("Send Notice", type="primary"): handle_dev()
 
     render_fat_footer()
 
-# --- 4. 法律详情页 (High Contrast) ---
+# --- 4. 法律详情页 ---
 elif st.session_state.page == 'legal_view':
     st.button("⬅️ Back", on_click=lambda: set_page('landing'))
     st.markdown("---")
@@ -361,7 +436,7 @@ elif st.session_state.page == 'legal_view':
     key = st.session_state.get('view_legal', 'tos')
     content = L_TEXT.get(key, "Error")
     
-    # 使用自定义 CSS 类 .legal-box 渲染纯黑底白字
+    # 纯黑容器 + 金色标题 + 白字
     st.markdown(f"""
     <div class="legal-box">
         {content}

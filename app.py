@@ -93,7 +93,7 @@ Blockchain ငွေပေးချေမှုများသည် ပြင�
 }
 
 # ==========================================
-# 3. 动态 CSS (V4.4: 脉冲 + 真实 Logo + 首页布局)
+# 3. 动态 CSS (V4.5: 脉冲 + 真实 Logo + 首页布局)
 # ==========================================
 st.markdown("""
 <style>
@@ -232,7 +232,7 @@ st.markdown("""
 # ==========================================
 TRANS = {
     "English": {
-        "slogan": "Protect What You Create.",
+        "slogan": "Protect Your Original Videos & Photos",
         "sub_slogan": "The Global Standard for Web3 Copyright Defense.",
         "cookie_msg": "We use strictly necessary cookies to maintain your cryptographic session and ensure asset security. By using OriginGuard, you agree to our Terms.",
         "cookie_btn": "Accept & Secure Session",
@@ -248,7 +248,7 @@ TRANS = {
         "or_connect": "OR CONNECT WITH"
     },
     "中文": {
-        "slogan": "捍卫你的数字资产",
+        "slogan": "保护你的原创作品视频照片等",
         "sub_slogan": "Web3 版权保护全球标准 | 自动确权与维权",
         "cookie_msg": "OriginGuard 使用必要的 Cookie 来维护您的加密会话并确保资产安全。继续使用即表示您同意我们的服务条款。",
         "cookie_btn": "接受并保护会话",
@@ -296,10 +296,13 @@ def set_page(name): st.session_state.page = name
 def handle_dev(): st.toast(T['dev_msg'], icon="🏗️")
 
 # --- SVG 图标库 (Real Logos) ---
-# Footer Icons
+# Community Icons (Footer)
 SVG_DISCORD = """<svg viewBox="0 0 127.14 96.36" width="20"><path fill="white" d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.11,77.11,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.89,105.89,0,0,0,126.6,80.22c2.36-24.44-5.42-48.18-18.9-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>"""
 SVG_TWITTER = """<svg viewBox="0 0 24 24" width="20"><path fill="white" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>"""
 SVG_TELEGRAM = """<svg viewBox="0 0 24 24" width="20"><path fill="white" d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>"""
+SVG_FACEBOOK = """<svg viewBox="0 0 24 24" width="20"><path fill="white" d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036c-2.148 0-2.971.956-2.971 3.059v.913h3.945l-.526 3.667h-3.419v7.98h-4.844z"/></svg>"""
+SVG_GITHUB_FOOTER = """<svg viewBox="0 0 24 24" width="20"><path fill="white" d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>"""
+
 # Login Icons
 SVG_GOOGLE = """<svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.63-.06-1.25-.17-1.84H9v3.49h4.84c-.21 1.12-.85 2.07-1.8 2.71v2.24h2.91c1.7-1.56 2.68-3.87 2.68-6.6z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.24c-.81.54-1.84.86-3.05.86-2.34 0-4.32-1.58-5.03-3.71H.99v2.33C2.47 15.93 5.48 18 9 18z"/><path fill="#FBBC05" d="M3.97 10.73c-.18-.54-.28-1.12-.28-1.73s.1-1.19.28-1.73V4.94H.99c-.62 1.24-.98 2.63-.98 4.06s.36 2.82.98 4.06l2.98-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.59C13.47.89 11.43 0 9 0 5.48 0 2.47 2.07.99 4.94l2.98 2.33c.71-2.13 2.69-3.71 5.03-3.71z"/></svg>"""
 SVG_APPLE = """<svg width="18" height="18" viewBox="0 0 384 512" style="fill:white"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 52.3-11.4 69.5-34.3z"/></svg>"""
@@ -314,12 +317,14 @@ def render_fat_footer():
     
     with c1:
         st.markdown(f"<div class='footer-title'>{T['f_comm']}</div>", unsafe_allow_html=True)
-        # 真实 SVG 图标按钮 (使用 st.markdown 模拟)
+        # 真实 SVG 图标按钮 (增加 Facebook & GitHub Footer)
         st.markdown(f"""
-        <div style="display:flex; gap:10px;">
-            <button onclick="alert('Developing')" style="background:none; border:none; cursor:pointer;">{SVG_DISCORD}</button>
-            <button onclick="alert('Developing')" style="background:none; border:none; cursor:pointer;">{SVG_TWITTER}</button>
-            <button onclick="alert('Developing')" style="background:none; border:none; cursor:pointer;">{SVG_TELEGRAM}</button>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button onclick="alert('Developing')" style="background:none; border:none; cursor:pointer;" title="Discord">{SVG_DISCORD}</button>
+            <button onclick="alert('Developing')" style="background:none; border:none; cursor:pointer;" title="Twitter/X">{SVG_TWITTER}</button>
+            <button onclick="alert('Developing')" style="background:none; border:none; cursor:pointer;" title="Telegram">{SVG_TELEGRAM}</button>
+            <button onclick="alert('Developing')" style="background:none; border:none; cursor:pointer;" title="Facebook">{SVG_FACEBOOK}</button>
+            <button onclick="alert('Developing')" style="background:none; border:none; cursor:pointer;" title="GitHub Community">{SVG_GITHUB_FOOTER}</button>
         </div>
         """, unsafe_allow_html=True)
 
@@ -362,7 +367,6 @@ def render_fat_footer():
 if st.session_state.page == 'landing':
     st.write("")
     
-    # 使用 1.2:0.8 的比例，左侧文案，右侧登录框
     col_text, col_auth = st.columns([1.2, 0.8])
     
     with col_text:
@@ -379,7 +383,6 @@ if st.session_state.page == 'landing':
         st.markdown(f"<div style='margin-top: 40px; color:#FCD535; font-weight:bold;'>🟢 Solana Mainnet Block #{block_num}</div>", unsafe_allow_html=True)
 
     with col_auth:
-        # Auth Card 悬浮框
         st.markdown('<div class="auth-card">', unsafe_allow_html=True)
         tab_login, tab_reg = st.tabs([T['tab_login'], T['tab_reg']])
         
@@ -394,7 +397,6 @@ if st.session_state.page == 'landing':
                     st.error(T['err_login'])
             
             st.markdown(f"<div style='text-align:center; color:#94a3b8; font-size:12px; margin:15px 0;'>{T['or_connect']}</div>", unsafe_allow_html=True)
-            # 真实 Logo 按钮模拟
             st.markdown(f"""
             <a href="#" class="real-logo-btn btn-google">{SVG_GOOGLE} Continue with Google</a>
             <a href="#" class="real-logo-btn btn-apple">{SVG_APPLE} Continue with Apple</a>
@@ -406,7 +408,6 @@ if st.session_state.page == 'landing':
             st.text_input("Email", placeholder="user@example.com")
             st.text_input(T['lbl_pwd'], type="password", key="reg_pwd")
             st.text_input(T['lbl_cpwd'], type="password", key="reg_cpwd")
-            # 按钮文案改为：开启旅程
             if st.button(T['btn_reg'], type="primary", use_container_width=True):
                 with st.spinner("Creating Identity..."): time.sleep(2)
                 st.success(T['suc_reg'])

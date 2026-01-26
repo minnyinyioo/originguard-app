@@ -6,6 +6,23 @@ import time
 import requests
 import hashlib
 from datetime import datetime
+# ==========================================
+# [新增] Supabase 集成（免费后端）
+# ==========================================
+try:
+    from supabase import create_client, Client
+    SUPABASE_URL = os.getenv("SUPABASE_URL", "")
+    SUPABASE_KEY = os.getenv("SUPABASE_ANON_KEY", "")
+    if SUPABASE_URL and SUPABASE_KEY:
+        supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+        USE_SUPABASE = True
+    else:
+        USE_SUPABASE = False
+        supabase = None
+except ImportError:
+    USE_SUPABASE = False
+    supabase = None
+
 
 # ==========================================
 # 1. 核心配置 (Core Config)

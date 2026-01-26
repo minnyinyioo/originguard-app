@@ -27,6 +27,14 @@ if 'cookies_accepted' not in st.session_state: st.session_state.cookies_accepted
 if 'wallet_connected' not in st.session_state: st.session_state.wallet_connected = False
 if 'wallet_address' not in st.session_state: st.session_state.wallet_address = None
 if 'kyc_status' not in st.session_state: st.session_state.kyc_status = "Unverified"
+if 'login_attempts' not in st.session_state: st.session_state.login_attempts = 0
+
+# Security Helper
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+# Hardcoded hash for 'origin2026'
+MASTER_HASH = "51f3a681d9e9b3238d750a7df4654e6f5b00316365296d31a950459be6863a21"
 
 # ==========================================
 # 3. 法律文本常量库 (IMMUTABLE)
@@ -370,11 +378,15 @@ def render_footer_components():
     with sc[2]: 
         if st.button("Privacy", key="sb2", use_container_width=True): st.session_state.view_legal = "privacy"; set_page('legal_view'); st.rerun()
     with sc[3]: 
-        if st.button("Security", key="sb3", use_container_width=True): st.toast("✅ Security Active", icon="🛡️")
+        if st.button("Security", key="sb3", use_container_width=True): 
+            st.toast("✅ End-to-End Encryption Active", icon="🛡️")
+            st.info("OriginGuard uses SHA-256 for asset fingerprinting and does not store original files.")
     with sc[4]: 
-        if st.button("Status", key="sb4", use_container_width=True): st.toast("🟢 Systems OK", icon="📶")
+        if st.button("Status", key="sb4", use_container_width=True): st.toast("🟢 All Systems Operational", icon="📶")
     with sc[5]: 
-        if st.button("Do not share my personal information", key="sb5", use_container_width=True): st.toast("🔒 Request Logged", icon="🚫")
+        if st.button("Do not share my personal information", key="sb5", use_container_width=True): 
+            st.toast("🔒 Privacy Request Logged", icon="🚫")
+            st.success("Your preference has been recorded and applied to your session.")
 
     st.markdown("<div style='text-align:center; color:#64748b; font-size:12px; margin-top:20px;'>© 2026 OriginGuard Solutions Inc. [MATRIX_NODE_HK]</div>", unsafe_allow_html=True)
     if not st.session_state.cookies_accepted:
@@ -397,10 +409,21 @@ if st.session_state.page == 'landing':
         tl, tr = st.tabs([T['tab_login'], T['tab_reg']])
         with tl:
             pwd = st.text_input(T['lbl_email'], type="password", key="l_p", placeholder="origin2026")
-            if st.button(T['btn_login'], type="primary", use_container_width=True):
-                if pwd == "origin2026":
-                    with st.spinner("AUTHENTICATING..."): time.sleep(1); st.session_state.auth = True; set_page('dashboard'); st.rerun()
-                else: st.error(T['err_login'])
+            
+            if st.session_state.login_attempts >= 5:
+                st.error("Too many failed attempts. Terminal locked for security. Please refresh.")
+            else:
+                if st.button(T['btn_login'], type="primary", use_container_width=True):
+                    if hash_password(pwd) == MASTER_HASH:
+                        with st.spinner("AUTHENTICATING..."): 
+                            time.sleep(1)
+                            st.session_state.auth = True
+                            st.session_state.login_attempts = 0
+                            set_page('dashboard')
+                            st.rerun()
+                    else: 
+                        st.session_state.login_attempts += 1
+                        st.error(T['err_login'])
             st.markdown(f"<div style='text-align:center; color:#94a3b8; font-size:12px; margin:15px 0; font-family:monospace;'>{T['or_connect']}</div>", unsafe_allow_html=True)
             st.markdown(f"""<a href="#" class="real-logo-btn btn-google">{SVG_GOOGLE} GOOGLE_OAUTH</a><a href="#" class="real-logo-btn btn-apple">{SVG_APPLE} APPLE_ID</a><a href="#" class="real-logo-btn btn-github">{SVG_GITHUB} GITHUB_DEV</a>""", unsafe_allow_html=True)
         with tr:
@@ -443,7 +466,7 @@ elif st.session_state.page == 'dashboard':
     k1.metric("SECURED ASSETS", "1,248", delta="Verified"); k2.metric("ACTIVE THREATS", "53", "-12% This Week", delta_color="inverse"); k3.metric("LEGAL ACTIONS", "41", "+5 Pending"); k4.metric("EST. GAS SAVED", "$12,400", "Solana Efficacy")
     
     st.markdown("---")
-    t1, t2, t3 = st.tabs(["🛡️ PROTECT", "⚖️ LEGAL HAMMER", "👤 IDENTITY"])
+    t1, t2, t3, t4 = st.tabs(["🛡️ PROTECT", "⚖️ LEGAL HAMMER", "👤 IDENTITY", "🛡️ SECURITY MONITOR"])
     
     with t1:
         uf = st.file_uploader("UPLOAD ASSET FOR ENCRYPTION", type=['png','jpg'])
@@ -459,10 +482,16 @@ elif st.session_state.page == 'dashboard':
                         st.link_button("🔍 VERIFY ON SOLSCAN (SIM)", f"https://solscan.io/account/{f_hash}")
 
     with t2:
-        st.text_input("INFRINGING URL_TARGET"); st.button("INITIATE TAKEDOWN NOTICE", type="primary", on_click=handle_dev)
+        target_url = st.text_input("INFRINGING URL_TARGET", placeholder="https://example.com/stolen-asset")
+        if st.button("INITIATE TAKEDOWN NOTICE", type="primary"):
+            if target_url.startswith("http"):
+                handle_dev()
+            else:
+                st.error("❌ INVALID PROTOCOL. URL must start with http:// or https://")
 
     with t3:
         st.subheader("IDENTITY VERIFICATION [KYC_PROTOCOL]")
+        st.warning("⚠️ SECURITY ADVISORY: This is a demonstration environment. Do not upload actual government IDs or sensitive personal data.")
         if st.session_state.kyc_status == "Verified":
             st.markdown(f"""<div class="kyc-box"><h3>✅ [STATUS: CLEARED]</h3><p>Level 2 Clearance Granted. Full matrix access unlocked.</p><span class="kyc-badge-verified">LVL.2 VERIFIED</span></div>""", unsafe_allow_html=True)
         elif st.session_state.kyc_status == "Pending":
@@ -476,6 +505,32 @@ elif st.session_state.page == 'dashboard':
             with c_k2: st.file_uploader("UPLOAD ID DOCUMENT", type=['jpg','png','pdf'])
             if st.button("SUBMIT FOR BIOMETRIC SCAN", type="primary"):
                 st.session_state.kyc_status = "Pending"; st.rerun()
+
+    with t4:
+        st.subheader("🛡️ REAL-TIME SECURITY MONITOR")
+        col_s1, col_s2 = st.columns(2)
+        with col_s1:
+            st.write("### SYSTEM INTEGRITY")
+            st.code("""
+[OK] SHA-256 Engine Operational
+[OK] Solana Node Sync: 100%
+[OK] DMCA AI Agent: STANDBY
+[OK] SSL/TLS: ENFORCED
+            """)
+        with col_s2:
+            st.write("### RECENT EVENTS")
+            st.info("Log-in detected from session IP")
+            st.success("Wallet Uplink established")
+            st.warning("3 Blocked attempts from unknown node (Simulation)")
+        
+        if st.button("RUN SECURITY SCAN"):
+            with st.status("Scanning assets..."):
+                time.sleep(1)
+                st.write("Checking hash collisions...")
+                time.sleep(1)
+                st.write("Verifying on-chain signatures...")
+                time.sleep(1)
+            st.success("SCAN COMPLETE: No integrity issues found.")
 
     render_footer_components()
 

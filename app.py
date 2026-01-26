@@ -398,7 +398,33 @@ if st.session_state.page == 'landing':
         with tl:
             pwd = st.text_input(T['lbl_email'], type="password", key="l_p", placeholder="origin2026")
             if st.button(T['btn_login'], type="primary", use_container_width=True):
-                if pwd == "origin2026":
+                # 如果启用了 Supabase，用真实登录；否则用测试密码
+if USE_SUPABASE:
+    try:
+        response = supabase.auth.sign_in_with_password({
+            "email": pwd,  # 暂时把密码框当邮箱用
+            "password": "temporary"  # 或者让用户输入
+        })
+        if response.user:
+            with st.spinner("AUTHENTICATING..."): 
+                time.sleep(1)
+                st.session_state.auth = True
+                st.session_state.user_id = response.user.id
+                set_page('dashboard')
+                st.rerun()
+    except:
+        st.error(T['err_login'])
+else:
+    # 保留原来的测试登录
+    if pwd == "origin2026":
+        with st.spinner("AUTHENTICATING..."): 
+            time.sleep(1)
+            st.session_state.auth = True
+            set_page('dashboard')
+            st.rerun()
+    else:
+        st.error(T['err_login'])
+
                     with st.spinner("AUTHENTICATING..."): time.sleep(1); st.session_state.auth = True; set_page('dashboard'); st.rerun()
                 else: st.error(T['err_login'])
             st.markdown(f"<div style='text-align:center; color:#94a3b8; font-size:12px; margin:15px 0; font-family:monospace;'>{T['or_connect']}</div>", unsafe_allow_html=True)
@@ -456,7 +482,34 @@ elif st.session_state.page == 'dashboard':
                         time.sleep(1.5); f_hash = calculate_file_dna(uf); block = get_real_solana_block()
                         st.success(f"✅ HASH GENERATED: {f_hash}"); st.markdown(f"""<div class="cert-box"><div class="cert-title">📜 CERTIFICATE GENERATED [IMMUTABLE]</div><div class="cert-hash">ID: {f_hash}</div></div>""", unsafe_allow_html=True)
                         st.download_button("📄 DOWNLOAD CERTIFICATE (.TXT)", generate_certificate(uf.name, f_hash, block), file_name=f"OG_CERT_{f_hash[:8]}.txt")
-                        st.link_button("🔍 VERIFY ON SOLSCAN (SIM)", f"https://solscan.io/account/{f_hash}")
+                        st.link_button("🔍 VERIFY ON SOLSCAN (SIM)", f"https://solscan.io/account/{f_hash}")# [新增] 如果启用了 Supabase，保存到云端
+if USE_SUPABASE and supabase:
+    try:
+        # 上传文件到 Supabase Storage
+        file_path = f"assets/{f_hash[:8]}_{uf.name}"
+        supabase.storage.from_("originguard").upload(
+            file_path,
+            uf.getvalue(),
+            {"content-type": uf.type}
+        )
+        
+        # 获取文件 URL
+        file_url = supabase.storage.from_("originguard").get_public_url(file_path)
+        
+        # 保存到数据库
+        if 'user_id' in st.session_state:
+            supabase.table("assets").insert({
+                "user_id": st.session_state.user_id,
+                "file_name": uf.name,
+                "file_hash": f_hash,
+                "file_url": file_url,
+                "solana_signature": f"SIM_{f_hash[:16]}"
+            }).execute()
+            
+            st.info(f"☁️ 已保存到云端：{file_url}")
+    except Exception as e:
+        st.warning(f"⚠️ 云端保存失败（本地依然可用）：{str(e)}")
+
 
     with t2:
         st.text_input("INFRINGING URL_TARGET"); st.button("INITIATE TAKEDOWN NOTICE", type="primary", on_click=handle_dev)
